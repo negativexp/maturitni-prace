@@ -1,0 +1,203 @@
+:root {
+    --radius: 5px;
+    --pad4: 9px;
+    --pad3: 18px;
+    --pad2: 12px;
+    --pad1: 6px;
+    --gap1: 5px;
+    --gap2: 10px;
+    --gap3: 15px;
+
+    --darkerWhite: rgb(235, 237, 235);
+    --purple: #ddb3e9;
+    --color1: rgb(46,50,73);
+    --color2: rgb(36,41,61);
+    --color3: rgb(60,64,87);
+    --color4: rgb(115,103,239);
+    --color5: rgb(207,205,228);
+}
+#editor-panel {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 145px;
+    z-index: 100;
+}
+#editor-panel > button {
+    margin-bottom: 5px;
+    width: 100%;
+}
+#editor-panel > .blocks {
+    background: rgba(46, 50, 73, 0.8);
+    padding: 3px;
+}
+#editor-panel > .blocks > .block {
+    padding: 3px;
+    display: flex;
+    gap: 2%;
+}
+#editor-panel > .blocks > .block > div {
+    border: 1px solid white;
+    height: 40px;
+}
+#editor-panel > .blocks > .block > button {
+    flex: 1;
+}
+section > div {
+    min-height: 60px;
+    border: 1px solid black;
+}
+.__toolbar {
+    padding: 5px;
+    background: rgba(46, 50, 73, 0.48);
+    position: fixed;
+    flex-wrap: wrap;
+    gap: 2px;
+    display: none;
+    z-index: 100;
+}
+button:hover {
+    cursor: pointer;
+    background: var(--color4);
+}
+button:hover img {
+    filter: invert(100%)
+}
+button, button {
+    color: white;
+    transition: .4s ease;
+    border-radius: 5px;
+    display: flex;
+    gap: 10px;
+    white-space: pre;
+    padding: 5px;
+    background-color: rgb(60,64,87);
+    border: 1px solid rgba(115, 103, 239, 0.25);
+}
+button img {
+    width: 14px;
+    transition: .4s ease;
+}
+button, select {
+    width: auto;
+}
+.__toolbar select, .form-popup select {
+    border-radius: 5px;
+    border: 1px solid transparent;
+    background: rgb(36,41,61);
+    outline: none;
+    color: white;
+    font-size: 15px;
+}
+.form-popup select {
+    padding: 6px;
+    flex: 1;
+}
+/* WARNING MESSAGE */
+.warning-message, .form-popup {
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 101;
+}
+.warning-message h2, .form-popup h2 {
+    color: white;
+}
+.form-popup label {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+.form-popup form {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+.warning-message textarea, .form-popup textarea, .form-popup input {
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    background: var(--color2);
+    padding: var(--pad1);
+    outline: none;
+    color: var(--color5);
+    font-size: 15px;
+    height: 100%;
+}
+.form-popup input[type="text"] {
+    height: auto;
+    flex: 1;
+}
+.warning-message > .wrapper, .form-popup > .wrapper {
+    border-radius: var(--radius);
+    padding: var(--pad2);
+    background: var(--color1);
+    border: 1px solid black;
+    min-height: 350px;
+    display: flex;
+    flex-flow: column;
+}
+.form-popup span {
+    width: 50px;
+    color: white;
+    font-size: 13px;
+}
+.warning-message::before, .form-popup::before {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    opacity: 0.75;
+}
+.warning-message #warningMessageText {
+    padding-bottom: 20px;
+}
+.warning-message > .wrapper .options, .form-popup > .wrapper .options {
+    padding-top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: var(--gap3);
+    align-items: flex-end;
+    margin-top: auto;
+}
+
+/* POPUP FORM */
+.form-popup > .wrapper > form span {
+    text-align: start;
+}
+.form-popup > .wrapper > h2 {
+    padding-bottom: var(--pad4);
+}
+.tab-content {
+    padding-top: 20px;
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+.tab.active {
+    color: white;
+    font-weight: bold;
+}
+.tabs {
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+.tab {
+    padding: 10px 20px;
+    margin-right: 5px;
+}

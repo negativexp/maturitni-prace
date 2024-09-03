@@ -1,0 +1,378 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Manrope", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    color: var(--color5);
+}
+ul li {
+    margin-left: 20px;
+}
+.code-font {
+    font-family: "Fira Code", monospace;
+}
+:root {
+    --radius: 5px;
+    --pad4: 9px;
+    --pad3: 18px;
+    --pad2: 12px;
+    --pad1: 6px;
+    --gap1: 5px;
+    --gap2: 10px;
+    --gap3: 15px;
+
+    --darkerWhite: rgb(235, 237, 235);
+    --purple: #ddb3e9;
+    --color1: rgb(46,50,73);
+    --color2: rgb(36,41,61);
+    --color3: rgb(60,64,87);
+    --color4: rgb(115,103,239);
+    --color5: rgb(207,205,228);
+}
+p > a, li > a {
+    color: var(--color4);
+}
+body {
+    background: var(--color2);
+    display: flex;
+    min-height: 100vh;
+}
+.button, p, a, td, td input {
+    font-size: 14px;
+}
+
+/* BUTTON */
+.button, input[type="submit"] {
+    transition: .4s ease;
+    border-radius: var(--radius);
+    display: flex;
+    gap: var(--gap2);
+    white-space:pre;
+
+    padding: 5px 10px;
+    background-color: var(--color3);
+    border: 1px solid rgba(115,103,239, 0.25);
+}
+a:hover, input[type="submit"]:hover {
+    cursor: pointer;
+}
+a {
+    text-decoration: none;
+}
+main .button:hover, nav > .profile .button:hover, input[type="submit"]:hover, .warning-message .button:hover, .form-popup .button:hover {
+    background: var(--color4);
+    color: black;
+}
+nav > .links .button {
+    background: transparent;
+    padding: 10px;
+    border: 2px solid transparent;
+}
+nav > .links .button:hover {
+    background: var(--color4);
+    color: black;
+}
+nav > .links .button:hover > img, nav > .profile .button:hover img {
+    filter: invert(100%)
+}
+.active {
+    background: var(--color4) !important;
+    color: black;
+}
+.button:has(img) img {
+    width: 18px;
+}
+
+/* NAV */
+nav {
+    top: 0;
+    position: sticky;
+    height: 100vh;
+    display: flex;
+    flex-flow: column;
+    background: var(--color1);
+    /* kvuli box shadow */
+    z-index: 0;
+}
+nav > .links {
+    display: flex;
+    flex-flow: column;
+    flex: 1;
+    padding: 0 var(--pad4);
+}
+.active img {
+    filter: invert(100%)
+}
+nav > .links a:not(:first-child) {
+    margin-top: 10px;
+}
+nav > .links > .subnav a {
+    margin-top: 10px;
+}
+nav > .links > .subnav.open {
+    max-height: 200px;
+}
+nav > .links > .subnav {
+    overflow: hidden;
+    max-height: 0;
+    padding-left: 15px;
+    justify-self: flex-end;
+    display: flex;
+    flex-flow: column;
+    transition: max-height .3s ease;
+}
+nav .button img {
+    width: 18px;
+    transition: .4s ease;
+}
+nav > .profile {
+    padding: var(--pad2);
+    display: flex;
+    flex-flow: column;
+    gap: var(--gap1);
+}
+nav > .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--pad3);
+}
+
+/* MAIN */
+main {
+    display: flex;
+    flex-flow: column;
+    gap: var(--gap3);
+    padding: var(--pad3);
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table thead th {
+    padding: var(--pad2);
+    border-bottom: 2px solid var(--color4);
+}
+table thead th:last-child {
+    width: 1%;
+}
+table tbody tr:nth-child(odd) {
+    background: var(--color3);
+}
+table tbody td {
+    padding: var(--pad2);
+}
+able > tbody td.options {
+    width: 170px;
+    white-space: nowrap;
+}
+table > tbody td.options .button {
+    display: inline-block;
+}
+table tbody tr:not(:last-child) {
+    border-bottom: 1px solid var(--color2);
+}
+table tbody td:not(:last-child), main > section > table thead th:not(:last-child) {
+    border-right: 1px dashed rgba(115,103,239, 0.5);
+}
+table input, table select {
+    min-width: 75px !important;
+}
+table .fit {
+    width: 0%;
+}
+
+/* FORMULAR */
+form .row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap2);
+}
+form {
+    display: flex;
+    flex-flow: column;
+}
+form label {
+    display: flex;
+    flex-flow: column;
+    padding-bottom: calc(var(--pad4)*2);
+}
+form label.line {
+    align-items: center;
+    flex-flow: row !important;
+}
+form label.line > span {
+    padding-bottom: 0;
+    padding-right: 10px;
+    width: 100px;
+}
+form label.line > input {
+    flex: 1;
+}
+form label > input, form textarea {
+    transition: border .3s ease;
+}
+form label > span {
+    padding-bottom: var(--pad1);
+}
+form label:hover input, form textarea:hover {
+    border-bottom: 1px solid var(--color4);
+}
+form textarea {
+    font-size: 14px;
+    resize: vertical;
+    flex: 1;
+}
+input[type="text"], form input[type="password"], form input[type="number"], select, form textarea, form input {
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    background: var(--color2);
+    padding: var(--pad1);
+    outline: none;
+    color: var(--color5);
+}
+input:not(input[type="submit"]), select {
+    width: 100%;
+}
+table input:read-only {
+    background: none;
+}
+table input::placeholder {
+    color: var(--color5);
+}
+
+form label:has(label) {
+    flex-flow: column !important;
+    align-items: flex-start !important;
+}
+form label:has(label) span {
+    padding-bottom: 0;
+}
+form label:has(input[type="checkbox"]), form label:has(input[type="radio"]) {
+    padding-left: var(--pad4);
+    flex-flow: row;
+    align-items: center;
+    gap: var(--gap1);
+}
+.checkboxes {
+    display: flex;
+    gap: var(--gap3);
+}
+
+/* SECTION */
+main > section {
+    padding: var(--pad2);
+}
+.section-header {
+    padding-bottom: var(--pad2);
+}
+.section-header:has(img), .section-header:has(.button) {
+    display: flex;
+    align-items: center;
+    gap: 2%;
+}
+.options {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--gap1);
+}
+section, header, section:has(article) article {
+    padding: var(--pad2);
+    background: var(--color1);
+    border-radius: var(--radius);
+    box-shadow: rgba(50, 50, 93, 0.5) 0px 13px 27px -5px, rgba(0, 0, 0, 0.9) 0px 8px 16px -8px;
+}
+section:has(article) {
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    display: flex;
+    gap: var(--gap3);
+}
+section:has(article) article {
+    width: 100%;
+}
+header {
+    padding: var(--pad2);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.information {
+    width: 100%;
+}
+
+/* WARNING MESSAGE */
+.warning-message, .form-popup {
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 999;
+}
+.warning-message {
+    display: flex;
+}
+.warning-message > .wrapper, .form-popup > .wrapper {
+    border-radius: var(--radius);
+    padding: var(--pad2);
+    background: var(--color1);
+    border: 1px solid black;
+}
+.warning-message::before, .form-popup::before {
+    z-index: -1;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    opacity: 0.75;
+}
+.warning-message #warningMessageText {
+    padding-bottom: 20px;
+}
+.warning-message > .wrapper .options, .form-popup > .wrapper .options {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: var(--gap3);
+}
+.warning-message > .wrapper .options > .button, .form-popup > .wrapper .options > .button {
+    width: 100px;
+    justify-content: center;
+}
+
+/* POPUP FORM */
+.form-popup > .wrapper > form span {
+    text-align: start;
+}
+.form-popup > .wrapper > h2 {
+    padding-bottom: var(--pad4);
+}
+
+.flex {
+    display: flex;
+}
+.w75 {
+    width: 75%;
+}
+.w25 {
+    width: 25%;
+}
