@@ -9,6 +9,8 @@ $logsCount = $db->select(DB_PREFIX."_logs", ["COUNT(*)"], null,null,true)["COUNT
 $pagesCount = $db->select(DB_PREFIX."_pagination", ["COUNT(*)"], null,null,true)["COUNT(*)"];
 ?>
 
+
+
 <main>
     <header>
         <h1>Přehled</h1>

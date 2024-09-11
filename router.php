@@ -34,7 +34,12 @@ class router {
             $filepath = "." . $parsedURL;
             if (file_exists($filepath)) {
                 header("Content-Type: " . $allowedFileTypes[pathinfo($filepath, PATHINFO_EXTENSION)]);
-                readfile($filepath);
+                session_start();
+                if($_SESSION["admin"]["username"] === "admin") {
+                    readfile($filepath);
+                    exit();
+                }
+                $this->not_found();
                 exit();
             } else {
                 $this->not_found();
@@ -58,28 +63,6 @@ class router {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET') {
             $this->route($route, $path_to_include);
         }
-    }
-    private function put($route, $path_to_include): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-            $this->route($route, $path_to_include);
-        }
-    }
-    private function patch($route, $path_to_include): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'PATCH') {
-            $this->route($route, $path_to_include);
-        }
-    }
-    private function delete($route, $path_to_include): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
-            $this->route($route, $path_to_include);
-        }
-    }
-    private function any($route, $path_to_include): void
-    {
-        $this->route($route, $path_to_include);
     }
     private function route($route, $path_to_include): void
     {
