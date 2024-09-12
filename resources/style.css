@@ -15,7 +15,7 @@
     --padding1: 20px;
     --text: #1F0A1E;
     --background: #F1EAF0;
-    --primary: #BC4BBE;
+    --primary: #0098fd;
     --secondary: #DB9AB5;
     --accent: #CE7688;
     --dark: black;
@@ -51,13 +51,13 @@ nav a:hover {
 }
 
 main {
-    background: yellow;
 }
 section, header .wrapper {
     max-width: var(--maxWidth);
     display: flex;
     flex-flow: column;
     margin: 0 auto;
+    background: var(--primary);
 }
 header .wrapper {
     padding: 10px 20px;
@@ -67,6 +67,36 @@ section {
 }
 section:nth-of-type(1) {
     flex-flow: row;
+    position: relative;
+    background: white;
+}
+footer {
+    position: relative;
+    background:white;
+    padding-top: 75px;
+}
+footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("/resources/wave.svg");
+    rotate: 180deg;
+}
+section:nth-of-type(1)::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 10%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("/resources/wave.svg");
 }
 section:nth-of-type(1) div:nth-of-type(1) {
     display: flex;

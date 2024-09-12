@@ -71,6 +71,9 @@
         </div>
     </section>
 </main>
+<footer>
+    mrdko
+</footer>
 <script>
     reservaitionForm = document.querySelector(".reservation form")
     personalDiv = document.querySelector(".reservation .personal")
