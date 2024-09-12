@@ -9,6 +9,7 @@
 }
 :root {
     --gap1: 5px;
+    --gap2: 10px;
     --maxWidth: 1200px;
     --maxHeight: 400px;
     --padding1: 20px;
@@ -19,13 +20,15 @@
     --accent: #CE7688;
     --dark: black;
 }
-
-p, a {
+h1,h2,h3 {
+    padding-bottom: 7px;
+}
+p, a, span {
     color: var(--text);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.29);
 }
 .button {
     padding: 5px 7px;
-    
 }
 
 header {
@@ -55,7 +58,12 @@ section, header .wrapper {
     display: flex;
     flex-flow: column;
     margin: 0 auto;
+}
+header .wrapper {
     padding: 10px 20px;
+}
+section {
+    padding: 50px 20px;
 }
 section:nth-of-type(1) {
     flex-flow: row;
@@ -68,20 +76,208 @@ section:nth-of-type(1) div:nth-of-type(1) {
 section:nth-of-type(1) div:nth-of-type(2) {
     text-align: center;
 }
-img {
+section:nth-of-type(1) img {
     max-width: 350px;
     width: 100%;
     padding: 20px;
 }
+.reservation {
+    position: relative;
+}
+.reservation form {
+    border: 1px solid black;
+    background: purple;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    height: 320px;
+}
+
+.reservation form > div {
+    width: 100%;
+    flex: 1;
+    transition: opacity 0.2s ease;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap2);
+}
+
+.reservation .hide {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.reservation .track img {
+    object-fit: cover;
+    width: 100%;
+    max-width: 230px;
+}
+
+.reservation .track label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.reservation label {
+    display: flex;
+}
+.reservation label span {
+    display: inline-block;
+    width: 125px;
+}
+.reservation label input {
+    flex: 1;
+}
+.reservation .track label span {
+    width: auto;
+}
+
+.reservation .track input {
+    flex: 0;
+    visibility: collapse;
+}
+
+.reservation .track label:hover {
+    cursor: pointer;
+}
+
+.reservation .track img {
+    transition: filter 0.2s ease;
+    filter: brightness(20%);
+}
+
+.reservation .track label:hover img {
+    filter: brightness(40%);
+}
+
+.reservation .track input:checked + img {
+    filter: brightness(100%);
+}
+
+.reservation .arrow {
+    position: absolute;
+    z-index: 5;
+    height: 40px;
+}
+.reservation .arrow:hover {
+    cursor: pointer;
+}
+
+.reservation .arrow img {
+    object-fit: fill;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+}
+
+.reservation .arrow:nth-child(1) {
+    bottom: 20px;
+    left: 20px;
+}
+
+.reservation .arrow:nth-child(3) {
+    bottom: 20px;
+    right: 20px;
+}
+.reservation .personal {
+    z-index: 0;
+}
+.reservation .time {
+    z-index: 1;
+}
+.reservation .track {
+    z-index: 2;
+}
+.reservation .captcha {
+    z-index: 3;
+}
+.reservation .hide {
+    opacity: 0;
+    visibility: hidden;
+}
+.reservation .track .tracks {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    gap: var(--gap1);
+}
+.reservation .track img {
+    object-fit: cover;
+    width: 100%;
+    max-width: 230px;
+}
+.reservation .track label {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+.reservation .track label span {
+    width: auto;
+}
+.reservation .track input {
+    flex: 0;
+    visibility: collapse;
+}
+.reservation .track label:hover {
+    cursor: pointer;
+}
+.reservation .track img {
+    transition: filter .2s ease;
+    filter: brightness(20%);
+}
+.reservation .track label:hover img {
+    filter: brightness(40%);
+}
+.reservation .track input:checked + img {
+    filter: brightness(100%);
+}
+.reservation .time .info {
+    text-align: center;
+}
 
 
+.warning {
+    color: red;
+}
 .w100 { width: 100%; }
 .w75 { width: 75%; }
 .w50 { width: 50%; }
 .w33 { width: 33.333%; }
 .w25 { width: 25%; }
 
-@media (min-width: 769px) {
+@media (max-width: 500px) {
+    .reservation form {
+        min-height: 350px;
+    }
+    section {
+        padding: 50px 10px;
+    }
+    label {
+        flex-flow: column;
+    }
+    label span {
+        padding-bottom: 5px;
+    }
+}
+
+@media (max-width: 769px) {
+    .w50 {
+        width: 100%;
+    }
+    section {
+        flex-flow: column-reverse !important;
+    }
 }
 
 @media (min-width: 1025px) {

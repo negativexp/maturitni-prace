@@ -34,12 +34,7 @@ class router {
             $filepath = "." . $parsedURL;
             if (file_exists($filepath)) {
                 header("Content-Type: " . $allowedFileTypes[pathinfo($filepath, PATHINFO_EXTENSION)]);
-                session_start();
-                if($_SESSION["admin"]["username"] === "admin") {
-                    readfile($filepath);
-                    exit();
-                }
-                $this->not_found();
+                readfile($filepath);
                 exit();
             } else {
                 $this->not_found();

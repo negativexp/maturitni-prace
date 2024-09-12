@@ -3,7 +3,7 @@ class Database {
     private $servername = "localhost";
     private $dbusername = "root";
     private $dbpassword = "password";
-    private $database = "routerdatabaseadmin";
+    private $database = "strikemaster_db";
     private $conn;
     private static $instance = null;
     public function __construct() {
@@ -27,6 +27,17 @@ class Database {
                 'columns' => "id INT AUTO_INCREMENT, username VARCHAR(255), password VARCHAR(255), PRIMARY KEY (id)",
                 'rows' => [
                     ['username' => 'root', 'password' => '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8']
+                ]
+            ],
+            DB_PREFIX."_allowed_file_types" => [
+                'columns' => "id INT AUTO_INCREMENT, filetype VARCHAR(255), mimetype VARCHAR(255), PRIMARY KEY (id)",
+                'rows' => [
+                    ['filetype' => 'css', 'mimetype' => 'text/css'],
+                    ['filetype' => 'js', 'mimetype' => 'text/javascript'],
+                    ['filetype' => 'svg', 'mimetype' => 'image/svg+xml'],
+                    ['filetype' => 'png', 'mimetype' => 'image/png'],
+                    ['filetype' => 'jpg', 'mimetype' => 'image/jpeg'],
+                    ['filetype' => 'webp', 'mimetype' => 'image/webp']
                 ]
             ],
         ];
