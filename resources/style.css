@@ -31,10 +31,14 @@ h1 {
 h2 {
     font-size: 28px;
 }
-p, a, span, label {
+p, a, span, label, input {
     color: var(--text);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.29);
     z-index: 1;
+    font-size: 14px;
+}
+label {
+    font-size: 16px;
 }
 .button {
     padding: 5px 7px;
@@ -130,27 +134,100 @@ section:nth-of-type(1)::before {
     width: 33.3333%;
 }
 .hp form {
+    border-radius: 7px;
+
+    max-width: 800px;
     position: relative;
     display: flex;
+    justify-content: center;
     flex-flow: column;
-    background: red;
-    height: 200px;
-    overflow: hidden;
+    height: 250px;
+    margin: 0 auto;
+    background: var(--secondary);
 }
+
 .hp form .arrows {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    bottom: -41px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
     display: flex;
     justify-content: space-between;
     padding: 10px;
+    z-index: 2;
+}
+.hp form .arrow img {
+    height: 50px;
+}
+.hp form .arrow:hover {
+    cursor: pointer;
 }
 .hp form .page {
-    background: blue;
-    flex: none;
+    padding: 20px;
     height: 100%;
     width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity .2s ease;
+    opacity: 1;
+}
+
+.hp form .hide {
+    opacity: 0;
+    visibility: collapse;
+}
+
+form .input {
+    display: flex;
+    flex-flow: column;
+}
+form .tracks .input label {
+    display: flex;
+    flex-flow: column-reverse;
+
+    gap: var(--gap2);
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+}
+form .tracks .input {
+    height: 100%;
+}
+form .tracks {
+    gap: var(--gap1);
+    height: 100%;
+}
+form .tracks .input input {
+    opacity: 1;
+    display: none;
+}
+form .tracks .input label img {
+    border-radius: 7px;
+    height: auto;
+    width: 100%;
+    transition: filter .2s ease;
+    filter: brightness(20%);
+}
+form .tracks .input:hover img {
+    filter: brightness(50%);
+}
+form .tracks .input input:checked + label img {
+    filter: brightness(100%);
+}
+form .tracks .input img {
+    width: 25%;
+}
+form input, select {
+    padding: 3px 7px;
+    background: var(--secondary);
+    border: none;
+    border-bottom: 1px solid var(--accent);
+}
+.tracks {
+    display: flex;
+    justify-content: center;
 }
 
 

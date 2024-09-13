@@ -62,18 +62,9 @@
     </section>
     <section>
         <div class="w100">
+            <h2>Vytvořte si rezervaci</h2>
             <form>
-                <div class="page" id="track">
-                    <div class="input">
-                        <label for="lane">Vyberte dráhu:</label>
-                        <select id="lane" name="lane" required>
-                            <option value="lane1">Dráha 1</option>
-                            <option value="lane2">Dráha 2</option>
-                            <option value="lane3">Dráha 3</option>
-                            <option value="lane4">Dráha 4</option>
-                        </select>
-                    </div>
-
+                <div class="page" id="time">
                     <div class="input">
                         <label for="date">Vyberte datum:</label>
                         <input type="date" id="date" name="date" required>
@@ -81,11 +72,7 @@
 
                     <div class="input">
                         <label for="time">Vyberte čas od:</label>
-                        <select id="time" name="timeFrom" required>
-                            <option value="10:00">10:00</option>
-                            <option value="11:00">11:00</option>
-                            <option value="12:00">12:00</option>
-                        </select>
+                        <input type="time" name="timeFrom">
                     </div>
 
                     <div class="input">
@@ -98,7 +85,28 @@
                     </div>
                 </div>
 
-                <div class="page" id="personal">
+                <div class="page hide" id="tracks">
+                    <div class="tracks">
+                        <div class="input">
+                            <input type="radio" id="lane1" name="lane" value="1" />
+                            <label for="lane1">Dráha 1<img src="/resources/bowling.webp"></label>
+                        </div>
+                        <div class="input">
+                            <input type="radio" id="lane2" name="lane" value="2" />
+                            <label for="lane2">Dráha 2<img src="/resources/bowling.webp"></label>
+                        </div>
+                        <div class="input">
+                            <input type="radio" id="lane3" name="lane" value="3" />
+                            <label for="lane3">Dráha 3<img src="/resources/bowling.webp"></label>
+                        </div>
+                        <div class="input">
+                            <input type="radio" id="lane4" name="lane" value="4" />
+                            <label for="lane4">Dráha 4<img src="/resources/bowling.webp"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page hide" id="personal">
                     <div class="input">
                         <label for="name">Jméno:</label>
                         <input type="text" id="name" name="name" required>
@@ -120,7 +128,7 @@
                     </div>
                 </div>
 
-                <div class="page">
+                <div class="page hide" id="check">
                     <div class="input">
                         <label>
                             <input type="checkbox" name="terms" required>
@@ -134,11 +142,11 @@
                     <button type="submit">Odeslat rezervaci</button>
                 </div>
                 <div class="arrows">
-                    <div class="arrow">
-                        doleva
+                    <div class="arrow" onclick="previousSlide()">
+                        <img src="/resources/arrowleft.svg">
                     </div>
-                    <div class="arrow">
-                        doprava
+                    <div class="arrow" onclick="nextSlide()">
+                        <img src="/resources/arrowright.svg">
                     </div>
                 </div>
             </form>
@@ -148,5 +156,33 @@
 <footer>
     mrdko
 </footer>
+
+<script>
+    var position = 0
+    const pages = [document.getElementById("time"),document.getElementById("tracks"),document.getElementById("personal"),document.getElementById("check")]
+
+    function nextSlide() {
+        if(position < 3) {
+            position++
+            displaySlide()
+        }
+    }
+    function previousSlide() {
+        if(position > 0) {
+            position--
+            displaySlide()
+        }
+    }
+
+    function displaySlide() {
+        pages.forEach((page, count) => {
+            if(count === position) {
+                page.classList.remove("hide")
+            } else {
+                page.classList.add("hide")
+            }
+        })
+    }
+</script>
 </body>
 </html>
