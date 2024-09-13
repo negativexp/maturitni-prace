@@ -10,42 +10,77 @@
 :root {
     --gap1: 5px;
     --gap2: 10px;
+    --gap3: 15px;
     --maxWidth: 1200px;
     --maxHeight: 400px;
     --padding1: 20px;
-    --text: #1F0A1E;
-    --background: #F1EAF0;
-    --primary: #0098fd;
-    --secondary: #DB9AB5;
-    --accent: #CE7688;
-    --dark: black;
+    --text: #000916;
+    --background: #f3f8ff;
+    --primary: #1d78fa;
+    --secondary: #99b7e2;
+    --accent: #aa7ab9;
 }
 h1,h2,h3 {
     padding-bottom: 8px;
     text-transform: uppercase;
+    z-index: 1;
 }
-p, a, span {
+h1 {
+    font-size: 36px;
+}
+h2 {
+    font-size: 28px;
+}
+p, a, span, label {
     color: var(--text);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.29);
+    z-index: 1;
 }
 .button {
     padding: 5px 7px;
 }
-
+.button:hover {
+    cursor: pointer;
+}
+nav {
+    height: 100%;
+    display: flex;
+}
+nav a {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    background: var(--secondary);
+    padding: 0 7px;
+    transition: background .2s ease;
+}
+nav a:hover {
+    cursor: pointer;
+    background: var(--primary)
+}
 header {
+    z-index: 2;
+    width: 100%;
+    position: fixed;
     background: var(--accent);
 }
 header .wrapper {
+    height: 46px;
     flex-flow: row !important;
     justify-content: space-between;
+}
+header .wrapper .logo {
+    padding-top: 20px;
+    z-index: 99;
+    height: 90px;
+}
+header .wrapper img {
+    z-index: 2;
+    height: 90px;
 }
 nav {
     display: flex;
     gap: var(--gap1);
-}
-nav a {
-    background: yellow;
-    padding: 5px 7px;
 }
 header .wrapper {
     max-width: var(--maxWidth);
@@ -53,7 +88,7 @@ header .wrapper {
     flex-flow: column;
     align-items: center;
     margin: 0 auto;
-    padding: 10px 20px;
+    padding: 0px 20px;
 }
 section {
     display: flex;
@@ -87,15 +122,56 @@ section:nth-of-type(1)::before {
     height: 90px;
     background-image: url("/resources/wave.svg");
 }
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+}
+.gallery img {
+    width: 33.3333%;
+}
+.hp form {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    background: red;
+    height: 200px;
+    overflow: hidden;
+}
+.hp form .arrows {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+.hp form .page {
+    background: blue;
+    flex: none;
+    height: 100%;
+    width: 100%;
+}
 
 
+
+hr {
+    outline: none;
+    border: 1px solid black;
+    margin: 10px 0;
+}
+.bold {
+    font-weight: bold;
+}
 .warning {
     color: red;
 }
 .w100 { width: 100%; max-width: var(--maxWidth); }
 .w75 { width: 75%; max-width: calc(var(--maxWidth) * 0.75); }
 .w70 { width: 70%; max-width: calc(var(--maxWidth) * 0.70); }
+.w60 { width: 60%; max-width: calc(var(--maxWidth) * 0.6); }
 .w50 { width: 50%; max-width: calc(var(--maxWidth) * 0.5); }
+.w40 { width: 40%; max-width: calc(var(--maxWidth) * 0.4); }
 .w30 { width: 30%; max-width: calc(var(--maxWidth) * 0.3); }
 .w33 { width: 33.333%; max-width: calc(var(--maxWidth) * 0.333); }
 .w25 { width: 25%; max-width: calc(var(--maxWidth) * 0.25); }
@@ -104,11 +180,18 @@ section:nth-of-type(1)::before {
 }
 
 @media (max-width: 769px) {
-    .w50 {
+    .w50, .w75, .w70, .w60, .w50, .w40, .w30, .w33, .w25 {
         width: 100%;
+        max-width: unset;
     }
     section {
         flex-flow: column-reverse !important;
+    }
+    section > div {
+        padding: 25px 15px;
+    }
+    section:nth-of-type(1) img {
+        width: 100%;
     }
 }
 
