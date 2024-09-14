@@ -61,6 +61,11 @@
             <p><span class="bold">Neděle</span>: ZAVŘENO</p>
         </div>
     </section>
+    <section>
+        <div class="w100">
+            <hr>
+        </div>
+    </section>
     <section id="rezervace">
         <div class="w100 tacen">
             <h2>Vytvořte si rezervaci</h2>
@@ -187,6 +192,11 @@
                     <p>U nás se nudit nebudete! Pokud plánujete strávit na bowlingové dráze více než 5 hodin, je třeba se předem domluvit s majitelem, aby bylo zajištěno, že vám nic nebrání v tom užít si celou dobu plnou zábavy a soutěžení.</p>
                 </li>
             </ul>
+        </div>
+    </section>
+    <section>
+        <div class="w100">
+            <hr>
         </div>
     </section>
     <section>
