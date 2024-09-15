@@ -78,15 +78,12 @@
 
                     <div class="input">
                         <label for="time">Vyberte čas od:</label>
-                        <input type="time" name="timeFrom">
+                        <input id="timeStart" type="time" name="timeStart">
                     </div>
 
                     <div class="input">
                         <label for="time">Vyberte čas do:</label>
-                        <select id="time" name="timeTo" required>
-                            <option value="10:00">10:00</option>
-                            <option value="11:00">11:00</option>
-                            <option value="12:00">12:00</option>
+                        <select id="timeEnd" name="timeEnd" required>
                         </select>
                     </div>
                 </div>
@@ -149,10 +146,10 @@
                     <button type="submit">Odeslat rezervaci</button>
                 </div>
                 <div class="arrows">
-                    <div class="arrow" onclick="previousSlide()">
+                    <div class="arrow" onclick="Slider.previous()">
                         <img src="/resources/arrowleft.svg">
                     </div>
-                    <div class="arrow" onclick="nextSlide()">
+                    <div class="arrow" onclick="Slider.next()">
                         <img src="/resources/arrowright.svg">
                     </div>
                 </div>
@@ -215,31 +212,56 @@
 </footer>
 
 <script>
-    var position = 0
-    const pages = [document.getElementById("time"),document.getElementById("tracks"),document.getElementById("personal"),document.getElementById("check")]
-
-    function nextSlide() {
-        if(position < 3) {
-            position++
-            displaySlide()
-        }
-    }
-    function previousSlide() {
-        if(position > 0) {
-            position--
-            displaySlide()
-        }
-    }
-
-    function displaySlide() {
-        pages.forEach((page, count) => {
-            if(count === position) {
-                page.classList.remove("hide")
-            } else {
-                page.classList.add("hide")
+    const Slider = {
+        position: 0,
+        pages: [document.getElementById("time"),document.getElementById("tracks"),document.getElementById("personal"),document.getElementById("check")],
+        next() {
+            if(this.position < 3) {
+                this.position++
+                this.displaySlide()
             }
-        })
+        },
+        previous() {
+            if(this.position > 0) {
+                this.position--
+                this.displaySlide()
+            }
+        },
+        displaySlide() {
+            this.pages.forEach((page, count) => {
+                if(count === this.position) {
+                    page.classList.remove("hide")
+                } else {
+                    page.classList.add("hide")
+                }
+            })
+        }
     }
+
+    document.getElementById('timeStart').addEventListener('change', function() {
+        let timeStart = document.getElementById('timeStart').value
+        let timeEndSelect = document.getElementById('timeEnd')
+        timeEndSelect.innerHTML = ''
+
+        if (timeStart) {
+            let startTime = new Date(`1970-01-01T${timeStart}:00`)
+
+            for (let i = 1; i <= 5; i++) {
+                let newTime = new Date(startTime.getTime() + i * 60 * 60 * 1000)
+                let hours = newTime.getHours().toString().padStart(2, '0')
+                let minutes = newTime.getMinutes().toString().padStart(2, '0')
+                let option = document.createElement('option')
+                let price = 250 * i
+                option.value = i
+                if(i === 1) {
+                    option.textContent = `${hours}:${minutes} - ${i} Hodina (${price},- Kč)`
+                } else {
+                    option.textContent = `${hours}:${minutes} - ${i} Hodiny (${price},- Kč)`
+                }
+                timeEndSelect.appendChild(option)
+            }
+        }
+    })
 </script>
 </body>
 </html>
