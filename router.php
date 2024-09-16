@@ -22,6 +22,7 @@ class router {
     }
     private function checkNormalRoutes(): void {
         $this->get("/", "views/index.php");
+        $this->get("/kontakt", "views/kontakt.php");
     }
     private function checkAllowedFileTypes($parsedURL): void
     {

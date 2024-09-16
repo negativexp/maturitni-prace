@@ -10,18 +10,7 @@
     <title>StrikeMaster</title>
 </head>
 <body class="hp">
-<header>
-    <div class="wrapper">
-        <div class="logo">
-            <img alt="Bowlingové kuželky" title="Bowlingové kuželky" src="/resources/kuzelky.png">
-        </div>
-        <nav>
-            <a href="#rezervace">Rezervace</a>
-            <a>Kontakt</a>
-            <a>Admin</a>
-        </nav>
-    </div>
-</header>
+<?php include_once("components/header.php"); ?>
 <main>
     <section>
         <div class="w50">
@@ -85,6 +74,12 @@
                         <label for="time">Vyberte čas do:</label>
                         <select id="timeEnd" name="timeEnd" required>
                         </select>
+                    </div>
+
+                    <div class="info">
+                        <p class="warning">V tenhle den a čas nejsou dostupné volné dráhy, nejpozději od xx:xx</p>
+                        <p class="warning">V tenhle den a čas nejsou dostupné volné dráhy, nejpozději od xx:xx do yy:yy.</p>
+                        <p class="warning">V tenhle den nejsou volné žádné dráhy, zkuste si vybrat jinej den.</p>
                     </div>
                 </div>
 
@@ -164,6 +159,31 @@
     <section>
         <div class="w50">
             <h2>Jídelní lístek</h2>
+            <h3>Předkrmy</h3>
+            <ul>
+                <li>Česnekové topinky s rajčatovou salsou – 89 Kč</li>
+                <li>Křupavé kuřecí křidélka s BBQ omáčkou – 129 Kč</li>
+            </ul>
+            <hr>
+            <h3>Hlavní jídla</h3>
+            <ul>
+                <li>Domácí burger Strike Master s hranolky – 199 Kč</li>
+                <li>Pikantní kuřecí křídla s dipem – 149 Kč</li>
+                <li>Pizza Margherita s čerstvými rajčaty a bazalkou – 169 Kč</li>
+            </ul>
+            <hr>
+            <h3>Dezerty</h3>
+            <ul>
+                <li>Domácí cheesecake s ovocnou omáčkou – 89 Kč</li>
+                <li>Čokoládový fondant s vanilkovou zmrzlinou – 99 Kč</li>
+            </ul>
+            <hr>
+            <h3>Nápoje</h3>
+            <ul>
+                <li>Točené pivo – 45 Kč</li>
+                <li>Domácí limonáda – 39 Kč</li>
+                <li>Káva espresso – 35 Kč</li>
+            </ul>
         </div>
         <div class="w50">
             <h2>Proč Strike Master?</h2>
@@ -207,9 +227,7 @@
         </div>
     </section>
 </main>
-<footer>
-    mrdko
-</footer>
+<?php include_once("components/footer.php"); ?>
 
 <script>
     const Slider = {
