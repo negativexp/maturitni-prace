@@ -58,7 +58,7 @@
     <section id="rezervace">
         <div class="w100 tacen">
             <h2>Vytvořte si rezervaci</h2>
-            <form>
+            <form method="post">
                 <div class="page" id="time">
                     <div class="input">
                         <label for="date">Vyberte datum:</label>
@@ -235,8 +235,29 @@
         pages: [document.getElementById("time"),document.getElementById("tracks"),document.getElementById("personal"),document.getElementById("check")],
         next() {
             if(this.position < 3) {
-                this.position++
-                this.displaySlide()
+                if(this.position === 0) {
+                    //ajax
+                    let xhr = new XMLHttpRequest();
+                    let url = '/vytvorit-rezervaci';
+                    let formData = new FormData(document.querySelector("#rezervace form"))
+                    xhr.open("POST", url, true);
+                    xhr.onreadystatechange = function () {
+                        if (this.readyState === 4 && this.status === 200) {
+                            let message = JSON.parse(this.responseText).message
+                            console.log(message)
+                            if(message === "ok") {
+                                Slider.position++
+                                Slider.displaySlide()
+                            } else {
+                                //zobrazit v html
+                            }
+                        }
+                    }
+                    xhr.send(formData);
+                } else {
+                    this.position++
+                    this.displaySlide()
+                }
             }
         },
         previous() {
@@ -247,11 +268,11 @@
         },
         displaySlide() {
             this.pages.forEach((page, count) => {
-                if(count === this.position) {
-                    page.classList.remove("hide")
-                } else {
-                    page.classList.add("hide")
-                }
+                    if(count === this.position) {
+                        page.classList.remove("hide")
+                    } else {
+                        page.classList.add("hide")
+                    }
             })
         }
     }
