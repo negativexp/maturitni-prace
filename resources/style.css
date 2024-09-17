@@ -141,25 +141,50 @@ section:nth-of-type(1)::before {
 .gallery img {
     width: 33.3333%;
 }
-.reservationForm form {
-    height: 100%;
+.reservationForm {
+    background: var(--accent);
 }
 .reservationForm .header {
     display: flex;
     justify-content: space-between;
 }
+.reservationForm .pages {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.reservationForm .page {
+    flex: 1 0 100%;
+}
+
+.reservationForm .page.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.reservationForm .page.hide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
 .reservationForm .page .days {
     display: flex;
-    gap: 1px;
+    gap: 5px;
     flex-wrap: wrap;
 }
 .reservationForm .page .days > div {
-    border: 1px solid black;
-    width: calc(14.28% - 1px);
+    border-radius: 7px;
+    width: calc(14.28% - 5px);
     height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.reservationForm .page .days > div:hover {
+    cursor: pointer;
 }
 .reservationForm .page .days > div.red {
     background: red;
@@ -170,6 +195,15 @@ section:nth-of-type(1)::before {
 .reservationForm .page .days > div.green {
     background: green;
 }
+.reservationForm .page .times {
+    padding: 20px 0;
+    display: flex;
+}
+.reservationForm label {
+    display: flex;
+    flex-flow: column;
+}
+.reservationForm .page .times .column { width: 50% }
 
 footer {
     position: relative;
@@ -215,9 +249,6 @@ hr {
 .w25 { width: 25%; max-width: calc(var(--maxWidth) * 0.25); }
 
 @media (max-width: 500px) {
-    .reservationForm .page .days > div {
-        width: calc(25% - 1px);
-    }
 }
 
 @media (max-width: 769px) {
@@ -233,6 +264,9 @@ hr {
     }
     section:nth-of-type(1) img {
         width: 100%;
+    }
+    .reservationForm .page .days > div {
+        width: calc(25% - 5px);
     }
 }
 

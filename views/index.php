@@ -74,12 +74,47 @@
                         <div class="days" id="daysContainer">
                         </div>
                     </div>
-                    <div class="page">
+                    <div class="page hide">
                         <div class="header">
-
+                            <h3>Údaje & Čas</h3>
+                            <div class="options">
+                                <a id="back" class="button" onclick="Reservation.Back()">Zpátky</a>
+                            </div>
                         </div>
                         <div class="times">
-
+                            <form>
+                                <?php
+                                //selecty
+                                ?>
+                                <div class="column">
+                                    <label>
+                                        <span>Od</span>
+                                        <select name="timeStart">
+                                            <?php //selecty ?>
+                                        </select>
+                                    </label>
+                                    <label>
+                                        <span>Do</span>
+                                        <select name="timeEnd">
+                                            <?php //selecty ?>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="column">
+                                    <label>
+                                        <span>Jméno</span>
+                                        <input type="text" name="firstName" required/>
+                                    </label>
+                                    <label>
+                                        <span>Příjmení</span>
+                                        <input type="text" name="lastName" required/>
+                                    </label>
+                                    <label>
+                                        <span>E-mail</span>
+                                        <input type="email" name="email" required/>
+                                    </label>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -165,52 +200,6 @@
 <?php include_once("components/footer.php"); ?>
 
 <script>
-    const Slider = {
-        position: 0,
-        pages: [document.getElementById("time"),document.getElementById("tracks"),document.getElementById("personal"),document.getElementById("check")],
-        next() {
-            if(this.position < 3) {
-                if(this.position === 0) {
-                    //ajax
-                    let xhr = new XMLHttpRequest();
-                    let url = '/vytvorit-rezervaci';
-                    let formData = new FormData(document.querySelector("#rezervace form"))
-                    xhr.open("POST", url, true);
-                    xhr.onreadystatechange = function () {
-                        if (this.readyState === 4 && this.status === 200) {
-                            let message = JSON.parse(this.responseText).message
-                            console.log(message)
-                            if(message === "ok") {
-                                Slider.position++
-                                Slider.displaySlide()
-                            } else {
-                                document.getElementById("warningMessage").innerText = message
-                            }
-                        }
-                    }
-                    xhr.send(formData);
-                } else {
-                    this.position++
-                    this.displaySlide()
-                }
-            }
-        },
-        previous() {
-            if(this.position > 0) {
-                this.position--
-                this.displaySlide()
-            }
-        },
-        displaySlide() {
-            this.pages.forEach((page, count) => {
-                    if(count === this.position) {
-                        page.classList.remove("hide")
-                    } else {
-                        page.classList.add("hide")
-                    }
-            })
-        }
-    }
     const Reservation = {
         formData: new FormData(),
         month: document.getElementById("month"),
@@ -226,7 +215,7 @@
         },
         updateMonth() {
             this.month.innerText = this.currentDate.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' })
-            this.formData.append("month", this.currentDate.getMonth.toString())
+            this.formData.append("month", this.currentDate.getMonth() + 1)
         },
         nextMonth() {
             this.currentDate.setMonth(this.currentDate.getMonth() + 1)
@@ -234,7 +223,6 @@
             this.generateDays()
             this.monthRight.classList.toggle("hidden")
             this.monthLeft.classList.toggle("hidden")
-            this.formData.append("month", this.currentDate.getMonth().toString())
         },
         previousMonth() {
             this.currentDate.setMonth(this.currentDate.getMonth() - 1)
@@ -242,7 +230,6 @@
             this.generateDays()
             this.monthLeft.classList.toggle("hidden")
             this.monthRight.classList.toggle("hidden")
-            this.formData.append("month", this.currentDate.getMonth().toString())
         },
         generateDays() {
             const month = this.currentDate.getMonth() + 1;
@@ -253,14 +240,14 @@
             for (let i = 1; i <= numberOfDays; i++) {
                 const weekday = new Date(year, month - 1, i).getDay();
                 const dayNamesCzech = [
-                    'Neděle',   // 0
-                    'Pondělí',  // 1
-                    'Úterý',    // 2
-                    'Středa',   // 3
-                    'Čtvrtek',  // 4
-                    'Pátek',    // 5
-                    'Sobota'    // 6
-                ];
+                    'Neděle',
+                    'Pondělí',
+                    'Úterý',
+                    'Středa',
+                    'Čtvrtek',
+                    'Pátek',
+                    'Sobota'
+                ]
                 const dayElement = document.createElement('div');
                 if (weekday === 3) {
                     dayElement.className = 'red';
@@ -290,11 +277,18 @@
             xhr.open("POST", url, true);
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    let message = xhr.responseText
-                    console.log(message)
+                    if(JSON.parse(xhr.responseText).message === "ok") {
+                        document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
+                        document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
+                        //print tabulku casu
+                    }
                 }
             };
             xhr.send(this.formData);
+        },
+        Back() {
+            document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
+            document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
         }
     }
 

@@ -1,6 +1,8 @@
 <?php
-//8:00 - 19:00
-//STŘEDA A NEDĚLE ZAVŘENO
-//SOBOTA 16:00 - 1:00
-echo "bruh";
+if($_POST["day"] && $_POST["month"]) {
+    $day = $_POST["day"];
+    $month = $_POST["month"];
+    $message = json_encode(["message" => "ok"]);
+    echo $message;
+}
 exit();
