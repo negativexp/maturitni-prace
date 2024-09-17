@@ -64,25 +64,14 @@
                             <?php
                             $formatter = new IntlDateFormatter('cs_CZ', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
                             $formatter->setPattern('MMMM YYYY');
-                            echo "<h3>{$formatter->format(new DateTime())}</h3>";
+                            echo "<h3 id='month'>{$formatter->format(new DateTime())}</h3>";
                             ?>
+                            <div class="options">
+                                <a id="monthLeft" class="button hidden" onclick="Reservation.previousMonth()">doleva</a>
+                                <a id="monthRight" class="button" onclick="Reservation.nextMonth()">doprava</a>
+                            </div>
                         </div>
-                        <div class="days">
-                            <?php
-                            $date = new DateTime("now");
-                            $numberOfDays = cal_days_in_month(CAL_GREGORIAN, $date->format('m'), $date->format('Y'));
-                            $red = [1, 7, 29];
-                            $yellow = [5, 4, 9, 26];
-                            for ($i = 1; $i <= $numberOfDays; $i++) {
-                                if(in_array($i, $red)) {
-                                    echo "<div class='red'>Obsazené</div>";
-                                } elseif (in_array($i, $yellow)) {
-                                    echo "<div class='yellow'>Pár míst</div>";
-                                } else {
-                                    echo "<div class='green'>Volné</div>";
-                                }
-                            }
-                            ?>
+                        <div class="days" id="daysContainer">
                         </div>
                     </div>
                     <div class="page">
@@ -222,31 +211,97 @@
             })
         }
     }
+    const Reservation = {
+        formData: new FormData(),
+        month: document.getElementById("month"),
+        monthLeft: document.getElementById("monthLeft"),
+        monthRight: document.getElementById("monthRight"),
+        daysContainer: document.getElementById("daysContainer"),
+        currentDate: new Date(),
+        redDays: [],
+        yellowDays: [],
+        init() {
+            this.updateMonth()
+            this.generateDays()
+        },
+        updateMonth() {
+            this.month.innerText = this.currentDate.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' })
+            this.formData.append("month", this.currentDate.getMonth.toString())
+        },
+        nextMonth() {
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1)
+            this.updateMonth()
+            this.generateDays()
+            this.monthRight.classList.toggle("hidden")
+            this.monthLeft.classList.toggle("hidden")
+            this.formData.append("month", this.currentDate.getMonth().toString())
+        },
+        previousMonth() {
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1)
+            this.updateMonth()
+            this.generateDays()
+            this.monthLeft.classList.toggle("hidden")
+            this.monthRight.classList.toggle("hidden")
+            this.formData.append("month", this.currentDate.getMonth().toString())
+        },
+        generateDays() {
+            const month = this.currentDate.getMonth() + 1;
+            const year = this.currentDate.getFullYear();
+            this.daysContainer.innerHTML = '';
+            const numberOfDays = new Date(year, month, 0).getDate();
 
-    document.getElementById('timeStart').addEventListener('change', function() {
-        let timeStart = document.getElementById('timeStart').value
-        let timeEndSelect = document.getElementById('timeEnd')
-        timeEndSelect.innerHTML = ''
-
-        if (timeStart) {
-            let startTime = new Date(`1970-01-01T${timeStart}:00`)
-
-            for (let i = 1; i <= 5; i++) {
-                let newTime = new Date(startTime.getTime() + i * 60 * 60 * 1000)
-                let hours = newTime.getHours().toString().padStart(2, '0')
-                let minutes = newTime.getMinutes().toString().padStart(2, '0')
-                let option = document.createElement('option')
-                let price = 250 * i
-                option.value = i
-                if(i === 1) {
-                    option.textContent = `${hours}:${minutes} - ${i} Hodina (${price},- Kč)`
+            for (let i = 1; i <= numberOfDays; i++) {
+                const weekday = new Date(year, month - 1, i).getDay();
+                const dayNamesCzech = [
+                    'Neděle',   // 0
+                    'Pondělí',  // 1
+                    'Úterý',    // 2
+                    'Středa',   // 3
+                    'Čtvrtek',  // 4
+                    'Pátek',    // 5
+                    'Sobota'    // 6
+                ];
+                const dayElement = document.createElement('div');
+                if (weekday === 3) {
+                    dayElement.className = 'red';
+                } else if (weekday === 0) {
+                    dayElement.className = 'red';
                 } else {
-                    option.textContent = `${hours}:${minutes} - ${i} Hodiny (${price},- Kč)`
+                    if (this.redDays.includes(i)) {
+                        dayElement.className = 'red';
+                    } else if (this.yellowDays.includes(i)) {
+                        dayElement.className = 'yellow';
+                        dayElement.onclick = () => this.dayClick(i);
+                    } else {
+                        dayElement.className = 'green';
+                        dayElement.innerText = `${i}: Volné`;
+                        dayElement.onclick = () => this.dayClick(i);
+                    }
                 }
-                timeEndSelect.appendChild(option)
+                dayElement.innerText = dayNamesCzech[weekday]+` (${i}.${month})`
+                this.daysContainer.appendChild(dayElement);
             }
+        },
+        dayClick(number) {
+            this.formData.append("day", number)
+
+            let xhr = new XMLHttpRequest();
+            let url = '/get-times';
+            xhr.open("POST", url, true);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let message = xhr.responseText
+                    console.log(message)
+                }
+            };
+            xhr.send(this.formData);
         }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        Reservation.init()
     })
+
 </script>
 </body>
 </html>
