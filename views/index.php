@@ -55,97 +55,43 @@
             <hr>
         </div>
     </section>
-    <section id="rezervace">
-        <div class="w100 tacen">
-            <h2>Vytvořte si rezervaci</h2>
-            <form method="post">
-                <div class="page" id="time">
-                    <div class="input">
-                        <label for="date">Vyberte datum:</label>
-                        <input type="date" id="date" name="date" required>
-                    </div>
-
-                    <div class="input">
-                        <label for="time">Vyberte čas od:</label>
-                        <input id="timeStart" type="time" name="timeStart">
-                    </div>
-
-                    <div class="input">
-                        <label for="time">Vyberte čas do:</label>
-                        <select id="timeEnd" name="timeEnd" required>
-                        </select>
-                    </div>
-
-                    <div class="info">
-                        <p class="warning">V tenhle den a čas nejsou dostupné volné dráhy, nejpozději od xx:xx</p>
-                        <p class="warning">V tenhle den a čas nejsou dostupné volné dráhy, nejpozději od xx:xx do yy:yy.</p>
-                        <p class="warning">V tenhle den nejsou volné žádné dráhy, zkuste si vybrat jinej den.</p>
-                    </div>
-                </div>
-
-                <div class="page hide" id="tracks">
-                    <div class="tracks">
-                        <div class="input">
-                            <input type="radio" id="lane1" name="lane" value="1" />
-                            <label for="lane1">Dráha 1<img src="/resources/bowling.webp"></label>
+    <section>
+        <div class="reservationForm w100">
+            <form>
+                <div class="pages">
+                    <div class="page">
+                        <div class="header">
+                            <?php
+                            $formatter = new IntlDateFormatter('cs_CZ', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
+                            $formatter->setPattern('MMMM YYYY');
+                            echo "<h3>{$formatter->format(new DateTime())}</h3>";
+                            ?>
                         </div>
-                        <div class="input">
-                            <input type="radio" id="lane2" name="lane" value="2" />
-                            <label for="lane2">Dráha 2<img src="/resources/bowling.webp"></label>
-                        </div>
-                        <div class="input">
-                            <input type="radio" id="lane3" name="lane" value="3" />
-                            <label for="lane3">Dráha 3<img src="/resources/bowling.webp"></label>
-                        </div>
-                        <div class="input">
-                            <input type="radio" id="lane4" name="lane" value="4" />
-                            <label for="lane4">Dráha 4<img src="/resources/bowling.webp"></label>
+                        <div class="days">
+                            <?php
+                            $date = new DateTime("now");
+                            $numberOfDays = cal_days_in_month(CAL_GREGORIAN, $date->format('m'), $date->format('Y'));
+                            $red = [1, 7, 29];
+                            $yellow = [5, 4, 9, 26];
+                            for ($i = 1; $i <= $numberOfDays; $i++) {
+                                if(in_array($i, $red)) {
+                                    echo "<div class='red'>Obsazené</div>";
+                                } elseif (in_array($i, $yellow)) {
+                                    echo "<div class='yellow'>Pár míst</div>";
+                                } else {
+                                    echo "<div class='green'>Volné</div>";
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
-                </div>
+                    <div class="page">
+                        <div class="header">
 
-                <div class="page hide" id="personal">
-                    <div class="input">
-                        <label for="name">Jméno:</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
+                        </div>
+                        <div class="times">
 
-                    <div class="input">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-
-                    <div class="input">
-                        <label for="phone">Telefon:</label>
-                        <input type="tel" id="phone" name="phone">
-                    </div>
-
-                    <div class="input">
-                        <label for="people">Počet osob:</label>
-                        <input type="number" id="people" name="people" min="1" max="10" required>
-                    </div>
-                </div>
-
-                <div class="page hide" id="check">
-                    <div class="input">
-                        <label>
-                            <input type="checkbox" name="terms" required>
-                            Souhlasím s podmínkami rezervace.
-                        </label>
-                    </div>
-                    <p>tohle stoji 70 czk</p>
-                    <div id="calculation">
-                        <p id="price">Cena: 120 Kč</p>
-                    </div>
-                    <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
-                    <button type="submit">Odeslat rezervaci</button>
-                </div>
-                <div class="arrows">
-                    <div class="arrow" onclick="Slider.previous()">
-                        <img src="/resources/arrowleft.svg">
-                    </div>
-                    <div class="arrow" onclick="Slider.next()">
-                        <img src="/resources/arrowright.svg">
+                        </div>
                     </div>
                 </div>
             </form>
@@ -249,7 +195,7 @@
                                 Slider.position++
                                 Slider.displaySlide()
                             } else {
-                                //zobrazit v html
+                                document.getElementById("warningMessage").innerText = message
                             }
                         }
                     }

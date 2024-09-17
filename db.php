@@ -29,6 +29,16 @@ class Database {
                     ['username' => 'root', 'password' => '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8']
                 ]
             ],
+            DB_PREFIX."_reservations" => [
+                'columns' => "id INT AUTO_INCREMENT PRIMARY KEY, 
+                  date DATE NOT NULL, 
+                  timeStart TIME NOT NULL, 
+                  timeEnd TIME NOT NULL, 
+                  track TINYINT NOT NULL, 
+                  firstName VARCHAR(50) NOT NULL, 
+                  lastName VARCHAR(50) NOT NULL, 
+                  email VARCHAR(70) NOT NULL"
+            ],
             DB_PREFIX."_allowed_file_types" => [
                 'columns' => "id INT AUTO_INCREMENT, filetype VARCHAR(255), mimetype VARCHAR(255), PRIMARY KEY (id)",
                 'rows' => [

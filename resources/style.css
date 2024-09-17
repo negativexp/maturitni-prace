@@ -140,127 +140,29 @@ section:nth-of-type(1)::before {
 .gallery img {
     width: 33.3333%;
 }
-.hp form {
-    border-radius: 7px;
-    max-width: 800px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    flex-flow: column;
-    height: 300px;
-    margin: 0 auto;
-    background: var(--secondary);
-    box-shadow: 0px 0px 15px 0px var(--secondary);
-}
-
-.hp form .arrows {
-    position: absolute;
-    bottom: -41px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    z-index: 2;
-}
-.hp form .arrow img {
-    height: 40px;
-    width: 40px;
-}
-.hp form .arrow {
-    background: var(--accent);
-    border-radius: 100%;
-    height: 50px;
-    width: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform .2s ease;
-}
-.hp form .arrow:hover {
-    cursor: pointer;
-    transform: scale(1.2);
-}
-.hp form .page {
-    padding: 20px;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    transition: opacity .2s ease;
-    opacity: 1;
-}
-
-.hp form .hide {
-    opacity: 0;
-    visibility: collapse;
-}
-
-form .input {
-    display: flex;
-    flex-flow: column;
-}
-form label {
-    text-align: left;
-}
-form .input:not(:last-child) {
-    padding-bottom: 10px;
-}
-form .tracks .input label {
-    display: flex;
-    flex-flow: column-reverse;
-
-    gap: var(--gap2);
-    align-items: center;
-    justify-content: flex-end;
+.reservationForm form {
     height: 100%;
 }
-
-form .tracks .input {
-    height: 100%;
-}
-form .tracks {
-    gap: var(--gap1);
-    height: 100%;
-}
-form .tracks .input input {
-    opacity: 1;
-    display: none;
-}
-form .tracks .input label img {
-    border-radius: 7px;
-    height: auto;
-    width: 100%;
-    transition: filter .2s ease;
-    filter: brightness(20%);
-}
-form .tracks .input:hover img {
-    filter: brightness(50%);
-}
-form .tracks .input input:checked + label img {
-    filter: brightness(100%);
-}
-form .tracks .input img {
-    width: 25%;
-}
-form input, select {
-    padding: 3px 7px;
-    background: var(--secondary);
-    border: none;
-    border-bottom: 1px solid var(--accent);
-}
-.tracks {
+.reservationForm .page .days {
     display: flex;
-    justify-content: center;
+    gap: 1px;
+    flex-wrap: wrap;
 }
-ul {
-    margin-left: 15px;
+.reservationForm .page .days > div {
+    border: 1px solid black;
+    width: calc(14.28% - 1px);
+    height: 100px;
 }
-li:not(:last-child) {
-    padding-bottom: 20px;
+.reservationForm .page .days > div.red {
+    background: red;
 }
+.reservationForm .page .days > div.yellow {
+    background: yellow;
+}
+.reservationForm .page .days > div.green {
+    background: green;
+}
+
 footer {
     position: relative;
     padding: 100px 0;
@@ -302,6 +204,9 @@ hr {
 .w25 { width: 25%; max-width: calc(var(--maxWidth) * 0.25); }
 
 @media (max-width: 500px) {
+    .reservationForm .page .days > div {
+        width: 25%;
+    }
 }
 
 @media (max-width: 769px) {

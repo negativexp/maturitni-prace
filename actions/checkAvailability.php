@@ -4,11 +4,12 @@ if(isset($_POST["date"]) && isset($_POST["timeStart"]) && isset($_POST["timeEnd"
     $date = $_POST["date"];
     $timeStart = $_POST["timeStart"];
     $timeEnd = (int)$_POST["timeEnd"];
-    if($timeEnd === 1) {
-        $message = "není volno";
-    } else {
-        $message = "ok";
-    }
+
+    //limity:
+    //kazda rezervace min 1 hodina a max 5 hodin
+    //
+
+    $message = "tesing";
 } else {
     $message = "Prosím doplňte všechny údaje!";
 }
