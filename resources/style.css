@@ -22,6 +22,10 @@
 }
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 25px;
+}
+body, html {
+    overflow-x: hidden;
 }
 h1,h2,h3 {
     padding-bottom: 8px;
@@ -34,21 +38,42 @@ h1 {
 h2 {
     font-size: 28px;
 }
-p, a, span, label, input {
+p, a, span, label span, input {
     color: var(--text);
     text-shadow: 1px 1px rgba(0, 0, 0, 0.29);
     z-index: 1;
     font-size: 16px;
 }
+input, select {
+    font-size: 16px;
+    border: none;
+    border-radius: 3px;
+    background: none;
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+}
+input[type="submit"] {
+    border: none;
+}
 label {
     font-size: 16px;
 }
 .button {
-    background: var(--secondary);
+    background: var(--primary);
     padding: 5px 7px;
+    border-radius: 7px;
+    background: var(--primary);
+    transition: background .2s ease;
 }
 .button:hover {
     cursor: pointer;
+    background: var(--accent)
+}
+ul {
+    margin-left: 20px;
+}
+li:not(:last-child) {
+    padding-bottom: 15px;
 }
 nav {
     height: 100%;
@@ -58,19 +83,21 @@ nav a {
     display: flex;
     align-items: center;
     height: 100%;
-    background: var(--secondary);
+    background: var(--primary);
     padding: 0 7px;
-    transition: background .2s ease;
+    transition: border-bottom-color .2s ease;
+    text-decoration: none;
+    border-bottom: 3px solid var(--primary);
 }
 nav a:hover {
     cursor: pointer;
-    background: var(--primary)
+    border-bottom: 3px solid var(--background);
 }
 header {
     z-index: 2;
     width: 100%;
     position: fixed;
-    background: var(--accent);
+    background: var(--secondary);
 }
 header .wrapper {
     height: 46px;
@@ -141,8 +168,10 @@ section:nth-of-type(1)::before {
 .gallery img {
     width: 33.3333%;
 }
-.reservationForm {
-    background: var(--accent);
+.reservationForm form {
+    background: var(--background);
+    padding: 20px;
+    border-radius: 7px;
 }
 .reservationForm .header {
     display: flex;
@@ -153,7 +182,6 @@ section:nth-of-type(1)::before {
     flex-direction: column;
     height: 100%;
     width: 100%;
-    overflow: hidden;
 }
 
 .reservationForm .page {
@@ -174,6 +202,7 @@ section:nth-of-type(1)::before {
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
+    padding-top: 20px;
 }
 .reservationForm .page .days > div {
     border-radius: 7px;
@@ -196,13 +225,18 @@ section:nth-of-type(1)::before {
     background: green;
 }
 .reservationForm .page .times {
-    padding: 20px 0;
+    padding-top: 20px;
+    gap: var(--gap3);
     display: flex;
 }
 .reservationForm label {
     display: flex;
     flex-flow: column;
 }
+.reservationForm .column:nth-of-type(2) label:last-child {
+    margin-top: 50px;
+}
+
 .reservationForm .page .times .column { width: 50% }
 
 footer {

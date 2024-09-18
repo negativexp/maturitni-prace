@@ -1,3 +1,6 @@
+<?php
+$db = Database::getInstance();
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -55,8 +58,9 @@
             <hr>
         </div>
     </section>
-    <section>
+    <section id="rezervace">
         <div class="reservationForm w100">
+            <h2>Rezervujte si místo u nás!</h2>
             <form>
                 <div class="pages">
                     <div class="page">
@@ -88,30 +92,33 @@
                                 ?>
                                 <div class="column">
                                     <label>
-                                        <span>Od</span>
-                                        <select name="timeStart">
+                                        <span>Od <span class="warning">*</span></span>
+                                        <select name="timeStart" required>
                                             <?php //selecty ?>
                                         </select>
                                     </label>
                                     <label>
-                                        <span>Do</span>
-                                        <select name="timeEnd">
+                                        <span>Do <span class="warning">*</span></span>
+                                        <select name="timeEnd" required>
                                             <?php //selecty ?>
                                         </select>
                                     </label>
                                 </div>
                                 <div class="column">
                                     <label>
-                                        <span>Jméno</span>
+                                        <span>Jméno <span class="warning">*</span></span>
                                         <input type="text" name="firstName" required/>
                                     </label>
                                     <label>
-                                        <span>Příjmení</span>
+                                        <span>Příjmení <span class="warning">*</span></span>
                                         <input type="text" name="lastName" required/>
                                     </label>
                                     <label>
-                                        <span>E-mail</span>
+                                        <span>E-mail <span class="warning">*</span></span>
                                         <input type="email" name="email" required/>
+                                    </label>
+                                    <label>
+                                        <input class="button" type="submit">
                                     </label>
                                 </div>
                             </form>
@@ -236,7 +243,6 @@
             const year = this.currentDate.getFullYear();
             this.daysContainer.innerHTML = '';
             const numberOfDays = new Date(year, month, 0).getDate();
-
             for (let i = 1; i <= numberOfDays; i++) {
                 const weekday = new Date(year, month - 1, i).getDay();
                 const dayNamesCzech = [
@@ -247,44 +253,113 @@
                     'Čtvrtek',
                     'Pátek',
                     'Sobota'
-                ]
+                ];
+
                 const dayElement = document.createElement('div');
-                if (weekday === 3) {
-                    dayElement.className = 'red';
-                } else if (weekday === 0) {
-                    dayElement.className = 'red';
-                } else {
-                    if (this.redDays.includes(i)) {
-                        dayElement.className = 'red';
-                    } else if (this.yellowDays.includes(i)) {
-                        dayElement.className = 'yellow';
-                        dayElement.onclick = () => this.dayClick(i);
-                    } else {
-                        dayElement.className = 'green';
-                        dayElement.innerText = `${i}: Volné`;
-                        dayElement.onclick = () => this.dayClick(i);
-                    }
+
+                <?php
+                $reservations = $db->select("dpp_reservations", ["month", "day"], null, null);
+                $reservationDays = [];
+                foreach ($reservations as $reservation) {
+                    $reservationDays[] = [
+                        'month' => $reservation['month'],
+                        'day' => $reservation['day']
+                    ];
                 }
-                dayElement.innerText = dayNamesCzech[weekday]+` (${i}.${month})`
+                ?>
+                const reservedDays = <?php echo json_encode($reservationDays); ?>;
+                const isReserved = reservedDays.some(reservation =>
+                    reservation.month === month && reservation.day === i
+                );
+                if (weekday === 3 || weekday === 0) {
+                    dayElement.className = 'red';
+                } else if (isReserved) {
+                    dayElement.className = 'yellow';
+                    dayElement.onclick = () => this.dayClick(i);
+                } else {
+                    dayElement.className = 'green';
+                    dayElement.innerText = `${i}: Volné`;
+                    dayElement.onclick = () => this.dayClick(i);
+                }
+                dayElement.innerText = dayNamesCzech[weekday] + ` (${i}.${month})`;
                 this.daysContainer.appendChild(dayElement);
             }
         },
         dayClick(number) {
             this.formData.append("day", number)
-
             let xhr = new XMLHttpRequest();
             let url = '/get-times';
             xhr.open("POST", url, true);
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    if(JSON.parse(xhr.responseText).message === "ok") {
+                    const json = JSON.parse(xhr.response)
+                    if(json.message === "ok") {
                         document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
                         document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
-                        //print tabulku casu
+                        this.updateSelects(json.data)
                     }
                 }
             };
             xhr.send(this.formData);
+        },
+        updateSelects(data) {
+            // Define opening hours
+            const openingHours = {
+                1: { start: '08:00:00', end: '19:00:00' }, // Monday
+                2: { start: '08:00:00', end: '19:00:00' }, // Tuesday
+                3: { closed: true },                      // Wednesday
+                4: { start: '08:00:00', end: '19:00:00' }, // Thursday
+                5: { start: '08:00:00', end: '19:00:00' }, // Friday
+                6: { start: '16:00:00', end: '01:00:00' }, // Saturday
+                0: { closed: true }                       // Sunday
+            };
+
+            //dodelat
+            const timeStartSelect = document.querySelector("select:nth-child(1)");
+            const timeEndSelect = document.querySelector("select:nth-child(2)");
+            console.log(timeStartSelect)
+            // Clear existing options
+            timeStartSelect.innerHTML = '';
+            timeEndSelect.innerHTML = '';
+
+            // Create options for each half-hour increment within the opening hours
+            function createOptions(startTime, endTime, selectedTimes) {
+                const options = [];
+                const start = new Date(`1970-01-01T${startTime}`);
+                const end = new Date(`1970-01-01T${endTime}`);
+
+                while (start < end) {
+                    const timeString = start.toTimeString().substring(0, 5);
+                    const isSelected = selectedTimes.some(t => t.timeStart === timeString);
+                    const option = `<option value="${timeString}" ${isSelected ? 'selected' : ''}>${timeString}</option>`;
+
+                    options.push(option);
+                    start.setMinutes(start.getMinutes() + 30);
+                }
+
+                return options.join('');
+            }
+
+            // Populate selects based on the day of the week and JSON data
+            const dayOfWeek = new Date().getDay(); // Get current day of the week (0=Sunday, 1=Monday, etc.)
+            const hours = openingHours[dayOfWeek];
+
+            if (hours && !hours.closed) {
+                const selectedTimes = data;
+
+                // Create time options for the start and end selects
+                const timeOptions = createOptions(hours.start, hours.end, selectedTimes);
+
+                // Set options in both selects
+                timeStartSelect.innerHTML = timeOptions;
+                timeEndSelect.innerHTML = timeOptions;
+            } else {
+                // If closed, disable the selects or show a message
+                timeStartSelect.disabled = true;
+                timeEndSelect.disabled = true;
+                timeStartSelect.innerHTML = '<option value="">Zavřeno</option>';
+                timeEndSelect.innerHTML = '<option value="">Zavřeno</option>';
+            }
         },
         Back() {
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
