@@ -6,7 +6,7 @@
         <nav>
             <a href="/#rezervace" title="Rezervace">Rezervace</a>
             <a href="/kontakt" title="Kontakt">Kontakt</a>
-            <a>Admin</a>
+            <a href="/admin" type="Administrace">Admin</a>
         </nav>
     </div>
 </header>

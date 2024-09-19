@@ -61,7 +61,7 @@ $db = Database::getInstance();
     <section id="rezervace">
         <div class="reservationForm w100">
             <h2>Rezervujte si místo u nás!</h2>
-            <form>
+            <div class="wrapper">
                 <div class="pages">
                     <div class="page">
                         <div class="header">
@@ -86,7 +86,7 @@ $db = Database::getInstance();
                             </div>
                         </div>
                         <div class="times">
-                            <form>
+                            <form method="post" action="/make-reservation">
                                 <?php
                                 //selecty
                                 ?>
@@ -102,6 +102,22 @@ $db = Database::getInstance();
                                         <select id="timeEnd" name="timeEnd" required>
                                             <?php //selecty ?>
                                         </select>
+                                    </label>
+                                    <label>
+                                        <span>Dráha 1</span>
+                                        <input type="radio" name="track" required>
+                                    </label>
+                                    <label>
+                                        <span>Dráha 2</span>
+                                        <input type="radio" name="track" required>
+                                    </label>
+                                    <label>
+                                        <span>Dráha 3</span>
+                                        <input type="radio" name="track" required>
+                                    </label>
+                                    <label>
+                                        <span>Dráha 4</span>
+                                        <input type="radio" name="track" required>
                                     </label>
                                 </div>
                                 <div class="column">
@@ -125,7 +141,7 @@ $db = Database::getInstance();
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </section>
     <section>
@@ -311,7 +327,7 @@ $db = Database::getInstance();
             data.timeStartSlots.forEach(timeslot => {
                 const option = document.createElement("option")
                 if(timeslot.tracks.length > 0) {
-                    option.value = option.innerText = timeslot.time + "(obsazené dráhy: " + timeslot.tracks.toString() + ")"
+                    option.value = option.innerText = timeslot.time + " (obsazené dráhy: " + timeslot.tracks.toString() + ")"
                 } else {
                     option.value = option.innerText = timeslot.time
                 }
@@ -321,7 +337,7 @@ $db = Database::getInstance();
             data.timeEndSlots.forEach(timeslot => {
                 const option = document.createElement("option")
                 if(timeslot.tracks.length > 0) {
-                    option.value = option.innerText = timeslot.time + "(obsazené dráhy: " + timeslot.tracks.toString() + ")"
+                    option.value = option.innerText = timeslot.time + " (obsazené dráhy: " + timeslot.tracks.toString() + ")"
                 } else {
                     option.value = option.innerText = timeslot.time
                 }

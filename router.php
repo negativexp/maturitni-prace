@@ -18,12 +18,14 @@ class router {
         $this->post("/admin/auth", "actions/admin/login.php");
         $this->adminMiddleware();
         $this->get("/admin", "views/admin/admin.php");
+        $this->get("/admin/reservations", "views/admin/reservations.php");
         $this->getpost("/admin/logoff", "actions/admin/logout.php");
     }
     private function checkNormalRoutes(): void {
         $this->get("/", "views/index.php");
         $this->get("/kontakt", "views/kontakt.php");
         $this->post("/get-times", "actions/getTimes.php");
+        $this->post("/make-reservation", "actions/makeReservation.php");
     }
     private function checkAllowedFileTypes($parsedURL): void
     {

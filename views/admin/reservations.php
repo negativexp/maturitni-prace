@@ -8,9 +8,9 @@ $db = Database::getInstance();
 ?>
 <main>
     <header>
-        <h1>Přehled</h1>
+        <h1>Rezervace</h1>
         <div class="options">
-            <a class="button" onclick="window.location.href = '/'">Zobrazit web</a>
+            <a class="button">Vytvořit rezervaci</a>
         </div>
     </header>
 </main>

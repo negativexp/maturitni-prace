@@ -168,10 +168,15 @@ section:nth-of-type(1)::before {
 .gallery img {
     width: 33.3333%;
 }
-.reservationForm form {
+.reservationForm .wrapper {
     background: var(--background);
     padding: 20px;
     border-radius: 7px;
+}
+.reservationForm .page .times form {
+    width: 100%;
+    display: flex;
+    gap: var(--gap3);
 }
 .reservationForm .header {
     display: flex;
@@ -233,6 +238,9 @@ section:nth-of-type(1)::before {
     display: flex;
     flex-flow: column;
 }
+.reservationForm label:has(input[type="radio"]) {
+    flex-flow: row;
+}
 .reservationForm .column:nth-of-type(2) label:last-child {
     margin-top: 50px;
 }
@@ -292,6 +300,12 @@ hr {
     }
     section {
         flex-flow: column-reverse !important;
+    }
+    .reservationForm .page .times {
+        flex-flow: column;
+    }
+    .reservationForm .page .times .column {
+        width: 100%;
     }
     section > div {
         padding: 25px 15px;
