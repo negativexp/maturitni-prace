@@ -93,13 +93,13 @@ $db = Database::getInstance();
                                 <div class="column">
                                     <label>
                                         <span>Od <span class="warning">*</span></span>
-                                        <select name="timeStart" required>
+                                        <select id="timeStart" name="timeStart" required>
                                             <?php //selecty ?>
                                         </select>
                                     </label>
                                     <label>
                                         <span>Do <span class="warning">*</span></span>
-                                        <select name="timeEnd" required>
+                                        <select id="timeEnd" name="timeEnd" required>
                                             <?php //selecty ?>
                                         </select>
                                     </label>
@@ -294,72 +294,33 @@ $db = Database::getInstance();
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     const json = JSON.parse(xhr.response)
                     if(json.message === "ok") {
+                        console.log(json.test)
+                        this.updateSelects(json)
                         document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
                         document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
-                        this.updateSelects(json.data)
                     }
                 }
             };
             xhr.send(this.formData);
         },
         updateSelects(data) {
-            // Define opening hours
-            const openingHours = {
-                1: { start: '08:00:00', end: '19:00:00' }, // Monday
-                2: { start: '08:00:00', end: '19:00:00' }, // Tuesday
-                3: { closed: true },                      // Wednesday
-                4: { start: '08:00:00', end: '19:00:00' }, // Thursday
-                5: { start: '08:00:00', end: '19:00:00' }, // Friday
-                6: { start: '16:00:00', end: '01:00:00' }, // Saturday
-                0: { closed: true }                       // Sunday
-            };
-
-            //dodelat
-            const timeStartSelect = document.querySelector("select:nth-child(1)");
-            const timeEndSelect = document.querySelector("select:nth-child(2)");
-            console.log(timeStartSelect)
-            // Clear existing options
-            timeStartSelect.innerHTML = '';
-            timeEndSelect.innerHTML = '';
-
-            // Create options for each half-hour increment within the opening hours
-            function createOptions(startTime, endTime, selectedTimes) {
-                const options = [];
-                const start = new Date(`1970-01-01T${startTime}`);
-                const end = new Date(`1970-01-01T${endTime}`);
-
-                while (start < end) {
-                    const timeString = start.toTimeString().substring(0, 5);
-                    const isSelected = selectedTimes.some(t => t.timeStart === timeString);
-                    const option = `<option value="${timeString}" ${isSelected ? 'selected' : ''}>${timeString}</option>`;
-
-                    options.push(option);
-                    start.setMinutes(start.getMinutes() + 30);
-                }
-
-                return options.join('');
-            }
-
-            // Populate selects based on the day of the week and JSON data
-            const dayOfWeek = new Date().getDay(); // Get current day of the week (0=Sunday, 1=Monday, etc.)
-            const hours = openingHours[dayOfWeek];
-
-            if (hours && !hours.closed) {
-                const selectedTimes = data;
-
-                // Create time options for the start and end selects
-                const timeOptions = createOptions(hours.start, hours.end, selectedTimes);
-
-                // Set options in both selects
-                timeStartSelect.innerHTML = timeOptions;
-                timeEndSelect.innerHTML = timeOptions;
-            } else {
-                // If closed, disable the selects or show a message
-                timeStartSelect.disabled = true;
-                timeEndSelect.disabled = true;
-                timeStartSelect.innerHTML = '<option value="">Zavřeno</option>';
-                timeEndSelect.innerHTML = '<option value="">Zavřeno</option>';
-            }
+            const timeStartSelect = document.getElementById("timeStart")
+            const timeEndSelect = document.getElementById("timeEnd")
+            timeStartSelect.innerHTML = ''
+            timeEndSelect.innerHTML = ''
+            data.timeStartSlots.forEach(timeslot => {
+                const option = document.createElement("option")
+                option.value = option.innerText = timeslot.time
+                if(!timeslot.free) option.disabled = true
+                timeStartSelect.appendChild(option)
+            })
+            data.timeEndSlots.forEach(timeslot => {
+                const option = document.createElement("option")
+                option.value = option.innerText = timeslot.time
+                if(!timeslot.free) option.disabled = true
+                timeEndSelect.appendChild(option)
+            })
+            console.log(data)
         },
         Back() {
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
