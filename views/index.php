@@ -310,13 +310,21 @@ $db = Database::getInstance();
             timeEndSelect.innerHTML = ''
             data.timeStartSlots.forEach(timeslot => {
                 const option = document.createElement("option")
-                option.value = option.innerText = timeslot.time
+                if(timeslot.tracks.length > 0) {
+                    option.value = option.innerText = timeslot.time + "(obsazené dráhy: " + timeslot.tracks.toString() + ")"
+                } else {
+                    option.value = option.innerText = timeslot.time
+                }
                 if(!timeslot.free) option.disabled = true
                 timeStartSelect.appendChild(option)
             })
             data.timeEndSlots.forEach(timeslot => {
                 const option = document.createElement("option")
-                option.value = option.innerText = timeslot.time
+                if(timeslot.tracks.length > 0) {
+                    option.value = option.innerText = timeslot.time + "(obsazené dráhy: " + timeslot.tracks.toString() + ")"
+                } else {
+                    option.value = option.innerText = timeslot.time
+                }
                 if(!timeslot.free) option.disabled = true
                 timeEndSelect.appendChild(option)
             })
