@@ -19,7 +19,7 @@ class router {
         $this->adminMiddleware();
         $this->get("/admin", "views/admin/admin.php");
         $this->get("/admin/reservations", "views/admin/reservations.php");
-        $this->getpost("/admin/logoff", "actions/admin/logout.php");
+        $this->getpost("/admin/logout", "actions/admin/logout.php");
     }
     private function checkNormalRoutes(): void {
         $this->get("/", "views/index.php");

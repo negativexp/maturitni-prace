@@ -88,31 +88,33 @@ $db = Database::getInstance();
                         <div class="times">
                             <form method="post" action="/make-reservation">
                                 <div class="column">
-                                    <label>
+                                    <div class="radios" style="display: flex">
+                                        <label>
+                                            <span>Dráha 1</span>
+                                            <input type="radio" value="1" name="track" onchange="Reservation.getTimeSlots()" required>
+                                        </label>
+                                        <label>
+                                            <span>Dráha 2</span>
+                                            <input type="radio" value="2s" name="track" onchange="Reservation.getTimeSlots()" required>
+                                        </label>
+                                        <label>
+                                            <span>Dráha 3</span>
+                                            <input type="radio" value="3" name="track" onchange="Reservation.getTimeSlots()" required>
+                                        </label>
+                                        <label>
+                                            <span>Dráha 4</span>
+                                            <input type="radio" value="4" name="track" onchange="Reservation.getTimeSlots()" required>
+                                        </label>
+                                    </div>
+                                    <label class="hidden">
                                         <span>Od <span class="warning">*</span></span>
                                         <select id="timeStart" name="timeStart" onchange="Reservation.updateTimeEndSlots()" required>
                                         </select>
                                     </label>
-                                    <label>
+                                    <label class="hidden">
                                         <span>Do <span class="warning">*</span></span>
                                         <select id="timeEnd" name="timeEnd" required>
                                         </select>
-                                    </label>
-                                    <label>
-                                        <span>Dráha 1</span>
-                                        <input type="radio" name="track" required>
-                                    </label>
-                                    <label>
-                                        <span>Dráha 2</span>
-                                        <input type="radio" name="track" required>
-                                    </label>
-                                    <label>
-                                        <span>Dráha 3</span>
-                                        <input type="radio" name="track" required>
-                                    </label>
-                                    <label>
-                                        <span>Dráha 4</span>
-                                        <input type="radio" name="track" required>
                                     </label>
                                 </div>
                                 <div class="column">
@@ -233,7 +235,6 @@ $db = Database::getInstance();
         init() {
             this.updateMonth()
             this.generateDays()
-            this.timeEndOptions = Array.from(this.timeEndSelect.options);
         },
         updateMonth() {
             this.month.innerText = this.currentDate.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' })
@@ -302,21 +303,8 @@ $db = Database::getInstance();
         },
         dayClick(number) {
             this.formData.append("day", number)
-            let xhr = new XMLHttpRequest();
-            let url = '/get-times';
-            xhr.open("POST", url, true);
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    const json = JSON.parse(xhr.response)
-                    if(json.message === "ok") {
-                        console.log(json.test)
-                        this.updateSelects(json)
-                        document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
-                        document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
-                    }
-                }
-            };
-            xhr.send(this.formData);
+            document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
+            document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
         },
         updateSelects(data) {
             this.timeStartSelect.innerHTML = ''
@@ -344,7 +332,57 @@ $db = Database::getInstance();
             console.log(data)
         },
         updateTimeEndSlots() {
-            console.log(this.timeEndOptions)
+            if (this.timeEndOptions === null) {
+                this.timeEndOptions = Array.from(this.timeEndSelect.options);
+            }
+            let temp = this.timeEndOptions.map((option, index) => {
+                return {
+                    text: option.innerText,
+                    value: option.value.split(" ")[0],
+                    disabled: option.disabled,
+                    index: index
+                };
+            });
+            this.timeEndSelect.innerHTML = ""
+            const startTime = this.timeStartSelect.value.split(" ")[0]
+            const selectedIndex = this.timeStartSelect.selectedIndex;
+            temp.splice(0, selectedIndex)
+            for(let i = 0; i < 11; i++) {
+                const option = document.createElement("option")
+                option.innerText = temp[i].text
+                option.value = temp[i].value
+                option.disabled = temp[i].disabled
+                if(startTime !== option.value) {
+                    this.timeEndSelect.appendChild(option)
+                }
+            }
+
+            console.log("Original", this.timeEndOptions[14]);
+            console.log("temp", temp[14]);
+        },
+        getTimeSlots() {
+            let xhr = new XMLHttpRequest();
+            let url = '/get-times';
+            xhr.open("POST", url, true);
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const json = JSON.parse(xhr.response)
+                    console.log(json)
+                }
+            };
+
+            //OPRAVIT
+            document.querySelectorAll(".times form input[type='radio']").forEach(radio => {
+                if(radio.selected === true) {
+                    this.formData.append("track", radio.value)
+                }
+            })
+            xhr.send(this.formData);
+
+            const x = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(1)")
+            const y = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)")
+            x.classList.remove("hidden")
+            y.classList.remove("hidden")
         },
         Back() {
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")

@@ -1,5 +1,8 @@
 <?php
-if($_POST["day"] && $_POST["month"]) {
+echo json_encode($_POST);
+die();
+exit();
+if(isset($_POST["day"]) && isset($_POST["month"]) && isset($_POST["bruh"])) {
     $db = Database::getInstance();
     $month = $_POST["month"];
     $day = $_POST["day"];
@@ -56,28 +59,16 @@ if($_POST["day"] && $_POST["month"]) {
         ];
     }
     $timeStartSlots = $hours;
-    $timeEndSlots = $hours;
+    $timeEndSlots = [];
     $timeEndSlots[0]["free"] = false;
     $timeStartSlots[count($timeEndSlots) - 1]["free"] = false;
 
-    //ke kazde rezervaci ten den, zadej drahy
+    //zajisiti casy od
     foreach($times as $time) {
         $timeStart = $time["timeStart"];
         $timeEnd = $time["timeEnd"];
         $startTimeStamp = strtotime($timeStart);
         $endTimeStamp = strtotime($timeEnd);
-        $track = $time["track"];
-        foreach($hours as $hourKey => $details) {
-            $hourTimeStamp = strtotime($details["time"]);
-            //pokud čas je mezi začátkem a koncem rezervace označ zabrané
-            if ($hourTimeStamp >= $startTimeStamp && $hourTimeStamp < $endTimeStamp) {
-                $timeStartSlots[$hourKey]["tracks"][] = $track;
-            }
-            //pokud čas je vyšší než začátek rezervace a menší než konec rezervace, označ zabrané pro timeEndSlots
-            if ($hourTimeStamp > $startTimeStamp && $hourTimeStamp < $endTimeStamp) {
-                $timeEndSlots[$hourKey]["tracks"][] = $track;
-            }
-        }
     }
 
     foreach($times as $time) {
@@ -88,27 +79,11 @@ if($_POST["day"] && $_POST["month"]) {
 
         foreach($hours as $hourKey => $details) {
             if(count($timeStartSlots[$hourKey]["tracks"]) > 3) {
+                break;
+            } else {
                 $hourTimeStamp = strtotime($details["time"]);
-                //pokud čas je mezi začátkem a koncem rezervace označ zabrané
-                if ($hourTimeStamp >= $startTimeStamp && $hourTimeStamp < $endTimeStamp) {
-                    $timeStartSlots[$hourKey]["free"] = false;
-                }
-                //pokud čas je vyšší než začátek rezervace a menší než konec rezervace, označ zabrané pro timeEndSlots
-                if ($hourTimeStamp > $startTimeStamp && $hourTimeStamp < $endTimeStamp) {
-                    $timeEndSlots[$hourKey]["free"] = false;
-                }
-                //pokud čas se rovná konec rezervace, oznac zabrane pro timeEndSlot
-                //a pro timeStartSlot volné
-                if ($hourTimeStamp == $endTimeStamp) {
-                    $timeStartSlots[$hourKey]["free"] = true;
-                    $timeEndSlots[$hourKey]["free"] = false;
-                }
-                //pokud čas se rovná začátek rezervace, označ volné pro timeEndSlot
-                if ($hourTimeStamp == $startTimeStamp) {
-                    $timeEndSlots[$hourKey]["free"] = true;
-                }
-                if($details["time"] === end($timeEndSlots)["time"]) {
-                    $timeStartSlots[$hourKey]["free"] = false;
+                if($startTimeStamp > $hourTimeStamp) {
+                    $timeEndSlots[] = $hours[$hourKey];
                 }
             }
         }
@@ -118,7 +93,8 @@ if($_POST["day"] && $_POST["month"]) {
         'message' => 'ok',
         'timeStartSlots' => $timeStartSlots,
         'timeEndSlots' => $timeEndSlots,
-        'test' => $times
+        'test' => $track,
+        'track' => $track
     ];
     echo json_encode($json);
 }
