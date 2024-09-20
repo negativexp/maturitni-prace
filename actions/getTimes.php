@@ -58,7 +58,7 @@ if($_POST["day"] && $_POST["month"]) {
     $timeStartSlots = $hours;
     $timeEndSlots = $hours;
     $timeEndSlots[0]["free"] = false;
-    $timeEndSlots[count($timeEndSlots) - 1]["free"] = false;
+    $timeStartSlots[count($timeEndSlots) - 1]["free"] = false;
 
     //ke kazde rezervaci ten den, zadej drahy
     foreach($times as $time) {

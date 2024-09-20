@@ -87,20 +87,15 @@ $db = Database::getInstance();
                         </div>
                         <div class="times">
                             <form method="post" action="/make-reservation">
-                                <?php
-                                //selecty
-                                ?>
                                 <div class="column">
                                     <label>
                                         <span>Od <span class="warning">*</span></span>
-                                        <select id="timeStart" name="timeStart" required>
-                                            <?php //selecty ?>
+                                        <select id="timeStart" name="timeStart" onchange="Reservation.updateTimeEndSlots()" required>
                                         </select>
                                     </label>
                                     <label>
                                         <span>Do <span class="warning">*</span></span>
                                         <select id="timeEnd" name="timeEnd" required>
-                                            <?php //selecty ?>
                                         </select>
                                     </label>
                                     <label>
@@ -229,12 +224,16 @@ $db = Database::getInstance();
         monthLeft: document.getElementById("monthLeft"),
         monthRight: document.getElementById("monthRight"),
         daysContainer: document.getElementById("daysContainer"),
+        timeStartSelect: document.getElementById("timeStart"),
+        timeEndSelect: document.getElementById("timeEnd"),
+        timeEndOptions: null,
         currentDate: new Date(),
         redDays: [],
         yellowDays: [],
         init() {
             this.updateMonth()
             this.generateDays()
+            this.timeEndOptions = Array.from(this.timeEndSelect.options);
         },
         updateMonth() {
             this.month.innerText = this.currentDate.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' })
@@ -320,10 +319,8 @@ $db = Database::getInstance();
             xhr.send(this.formData);
         },
         updateSelects(data) {
-            const timeStartSelect = document.getElementById("timeStart")
-            const timeEndSelect = document.getElementById("timeEnd")
-            timeStartSelect.innerHTML = ''
-            timeEndSelect.innerHTML = ''
+            this.timeStartSelect.innerHTML = ''
+            this.timeEndSelect.innerHTML = ''
             data.timeStartSlots.forEach(timeslot => {
                 const option = document.createElement("option")
                 if(timeslot.tracks.length > 0) {
@@ -332,7 +329,7 @@ $db = Database::getInstance();
                     option.value = option.innerText = timeslot.time
                 }
                 if(!timeslot.free) option.disabled = true
-                timeStartSelect.appendChild(option)
+                this.timeStartSelect.appendChild(option)
             })
             data.timeEndSlots.forEach(timeslot => {
                 const option = document.createElement("option")
@@ -342,9 +339,12 @@ $db = Database::getInstance();
                     option.value = option.innerText = timeslot.time
                 }
                 if(!timeslot.free) option.disabled = true
-                timeEndSelect.appendChild(option)
+                this.timeEndSelect.appendChild(option)
             })
             console.log(data)
+        },
+        updateTimeEndSlots() {
+            console.log(this.timeEndOptions)
         },
         Back() {
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
