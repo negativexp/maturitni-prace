@@ -13,12 +13,25 @@ $db = Database::getInstance();
     <title>StrikeMaster</title>
 </head>
 <body class="hp">
-<?php include_once("components/header.php"); ?>
 <main>
+    <?php include_once("components/header.php"); ?>
+    <?php
+    if(isset($_GET["dekujeme"])) {
+        echo "<div class='notification'>
+                <h3>Děkujeme za rezervaci!</h3>
+                <p class='warning'>Rezervace bude platná až po potvrzení emailem z důvodu spamu.</p>
+                <p>Prosíme, zkontrolujte svůj email (včetně složky spam) pro potvrzovací zprávu.</p>
+                </div>";
+    }
+    ?>
     <section>
         <div class="w50">
             <h1>Strike Master</h1>
             <p>Vítejte v našem moderním bowlingovém centru, které nabízí víc než jen hru. Spojte radost ze hry s vynikajícím jídlem a pitím v naší stylové restauraci. Ať už hledáte místo pro rodinný výlet, večer s přáteli nebo firemní akci, StrikeMaster je ideální destinací. Přijďte si užít atmosféru plnou soutěžení, smíchu a skvělých zážitků!</p>
+            <nav>
+                <a class="button" href="/#rezervace" title="Rezervace">Rezervace</a>
+                <a class="button" href="/kontakt" title="Kontakt">Kontakt</a>
+            </nav>
         </div>
         <div class="w50">
             <img alt="Strike Master" title="Logo" src="/resources/logo.png">
@@ -27,12 +40,12 @@ $db = Database::getInstance();
     <section>
         <div class="w60">
             <div class="gallery">
-                <img src="/resources/logo.png">
-                <img src="/resources/logo.png">
-                <img src="/resources/logo.png">
-                <img src="/resources/logo.png">
-                <img src="/resources/logo.png">
-                <img src="/resources/logo.png">
+                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
             </div>
         </div>
         <div class="w40">
@@ -71,8 +84,8 @@ $db = Database::getInstance();
                             echo "<h3 id='month'>{$formatter->format(new DateTime())}</h3>";
                             ?>
                             <div class="options">
-                                <a id="monthLeft" class="button hidden" onclick="Reservation.previousMonth()">doleva</a>
-                                <a id="monthRight" class="button" onclick="Reservation.nextMonth()">doprava</a>
+                                <a id="monthLeft" class="button hidden" onclick="Reservation.previousMonth()"><img src="/resources/arrowleft.svg" title="Šipka doleva StrikeMaster" alt="Šipka doleva StrikeMaster"></a>
+                                <a id="monthRight" class="button" onclick="Reservation.nextMonth()"><img src="/resources/arrowright.svg" title="Šipka doprava StrikeMaster" alt="Šipka doprava StrikeMaster"></a>
                             </div>
                         </div>
                         <div class="days" id="daysContainer">
@@ -110,7 +123,7 @@ $db = Database::getInstance();
                                     </div>
                                     <label class="hidden">
                                         <span>Od <span class="warning">*</span></span>
-                                        <select id="timeStart" name="timeStart" onchange="Reservation.updateTimeEndSlots(event)" required>
+                                        <select id="timeStart" name="timeStart" onclick="Reservation.updateTimeEndSlots(event)" required>
                                         </select>
                                     </label>
                                     <label class="hidden">
@@ -137,6 +150,20 @@ $db = Database::getInstance();
                                     </label>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="w100 legends">
+                    <h3>Legenda</h3>
+                    <div class="wrapper">
+                        <div class="w33 green">
+                            <p>Volné místa</p>
+                        </div>
+                        <div class="w33 yellow">
+                            <p>Volné místa</p>
+                        </div>
+                        <div class="w33 red">
+                            <p>Středa/Neděle ZAVŘENO nebo PLNO</p>
                         </div>
                     </div>
                 </div>

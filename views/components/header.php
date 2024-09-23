@@ -1,12 +1,10 @@
 <header>
     <div class="wrapper">
         <div class="logo">
-            <img alt="Bowlingové kuželky" title="Bowlingové kuželky" src="/resources/kuzelky.png">
+            <a href="/" title="Logo StrikeMaster Zpátky"><img alt="Bowlingové kuželky" title="Bowlingové kuželky StrikeMaster" src="/resources/kuzelky.png"></a>
         </div>
-        <nav>
-            <a href="/#rezervace" title="Rezervace">Rezervace</a>
-            <a href="/kontakt" title="Kontakt">Kontakt</a>
-            <a href="/admin" type="Administrace">Admin</a>
-        </nav>
+        <div>
+            <p><span class="warning">BOWLING</span> | RESTAURANT </p>
+        </div>
     </div>
 </header>

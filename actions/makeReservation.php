@@ -15,9 +15,13 @@ if(isset($_POST["month"]) && isset($_POST["day"]) && isset($_POST["track"])
     $email = $_POST["email"];
 
     $db = Database::getInstance();
-    $columns = ["month", "day", "timeStart", "timeEnd", "track", "firstName", "lastName", "email"];
-    $values = [$month, $day, $timeStart, $timeEnd, $track, $firstName, $lastName, $email];
+    $columns = ["month", "day", "timeStart", "timeEnd", "track", "firstName", "lastName", "email", "status"];
+    $values = [$month, $day, $timeStart, $timeEnd, $track, $firstName, $lastName, $email, "NEOVĚŘENO"];
     $db->insert(DB_PREFIX."_reservations", $columns, $values);
+
+    //zašli email
+
+    
     header("location: /?dekujeme");
 }
 exit();

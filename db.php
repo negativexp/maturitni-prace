@@ -38,19 +38,8 @@ class Database {
                   track TINYINT NOT NULL, 
                   firstName VARCHAR(50) NOT NULL, 
                   lastName VARCHAR(50) NOT NULL, 
-                  email VARCHAR(70) NOT NULL",
-                'rows' => [
-                    ['month' => 9, 'day' => 2, 'timeStart' => '08:00', 'timeEnd' => '09:30', 'track' => 1, 'firstName' => 'John', 'lastName' => 'Doe', 'email' => 'john.doe@example.com'],
-                    ['month' => 9, 'day' => 3, 'timeStart' => '10:30', 'timeEnd' => '12:00', 'track' => 2, 'firstName' => 'Jane', 'lastName' => 'Smith', 'email' => 'jane.smith@example.com'],
-                    ['month' => 9, 'day' => 4, 'timeStart' => '12:00', 'timeEnd' => '13:30', 'track' => 3, 'firstName' => 'Bob', 'lastName' => 'Brown', 'email' => 'bob.brown@example.com'],
-                    ['month' => 9, 'day' => 5, 'timeStart' => '16:00', 'timeEnd' => '17:00', 'track' => 4, 'firstName' => 'Alice', 'lastName' => 'Johnson', 'email' => 'alice.johnson@example.com'],
-                    ['month' => 9, 'day' => 6, 'timeStart' => '17:30', 'timeEnd' => '19:00', 'track' => 5, 'firstName' => 'Charlie', 'lastName' => 'Williams', 'email' => 'charlie.w@example.com'],
-                    ['month' => 9, 'day' => 8, 'timeStart' => '08:30', 'timeEnd' => '10:00', 'track' => 1, 'firstName' => 'David', 'lastName' => 'Taylor', 'email' => 'david.t@example.com'],
-                    ['month' => 9, 'day' => 9, 'timeStart' => '10:30', 'timeEnd' => '12:30', 'track' => 2, 'firstName' => 'Eva', 'lastName' => 'Anderson', 'email' => 'eva.a@example.com'],
-                    ['month' => 9, 'day' => 10, 'timeStart' => '14:00', 'timeEnd' => '15:00', 'track' => 3, 'firstName' => 'Frank', 'lastName' => 'Martinez', 'email' => 'frank.m@example.com'],
-                    ['month' => 9, 'day' => 12, 'timeStart' => '11:00', 'timeEnd' => '12:30', 'track' => 4, 'firstName' => 'Grace', 'lastName' => 'Garcia', 'email' => 'grace.g@example.com'],
-                    ['month' => 9, 'day' => 13, 'timeStart' => '08:00', 'timeEnd' => '09:30', 'track' => 5, 'firstName' => 'Hank', 'lastName' => 'Rodriguez', 'email' => 'hank.r@example.com'],
-                ]
+                  email VARCHAR(70) NOT NULL,
+                  status VARCHAR(25) NOT NULL"
             ],
             DB_PREFIX."_allowed_file_types" => [
                 'columns' => "id INT AUTO_INCREMENT, filetype VARCHAR(255), mimetype VARCHAR(255), PRIMARY KEY (id)",
