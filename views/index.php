@@ -91,24 +91,24 @@ $db = Database::getInstance();
                                     <div class="radios" style="display: flex">
                                         <label>
                                             <span>Dráha 1</span>
-                                            <input type="radio" value="1" name="track" onchange="Reservation.getTimeSlots()" required>
+                                            <input type="radio" value="1" name="track" onchange="Reservation.getTimeSlots(event)" required>
                                         </label>
                                         <label>
                                             <span>Dráha 2</span>
-                                            <input type="radio" value="2s" name="track" onchange="Reservation.getTimeSlots()" required>
+                                            <input type="radio" value="2" name="track" onchange="Reservation.getTimeSlots(event)" required>
                                         </label>
                                         <label>
                                             <span>Dráha 3</span>
-                                            <input type="radio" value="3" name="track" onchange="Reservation.getTimeSlots()" required>
+                                            <input type="radio" value="3" name="track" onchange="Reservation.getTimeSlots(event)" required>
                                         </label>
                                         <label>
                                             <span>Dráha 4</span>
-                                            <input type="radio" value="4" name="track" onchange="Reservation.getTimeSlots()" required>
+                                            <input type="radio" value="4" name="track" onchange="Reservation.getTimeSlots(event)" required>
                                         </label>
                                     </div>
                                     <label class="hidden">
                                         <span>Od <span class="warning">*</span></span>
-                                        <select id="timeStart" name="timeStart" onchange="Reservation.updateTimeEndSlots()" required>
+                                        <select id="timeStart" name="timeStart" onchange="Reservation.updateTimeEndSlots(event)" required>
                                         </select>
                                     </label>
                                     <label class="hidden">
@@ -333,50 +333,51 @@ $db = Database::getInstance();
         },
         updateTimeEndSlots() {
             if (this.timeEndOptions === null) {
-                this.timeEndOptions = Array.from(this.timeEndSelect.options);
+                this.timeEndOptions = Array.from(this.timeStartSelect.options)
             }
+
             let temp = this.timeEndOptions.map((option, index) => {
                 return {
                     text: option.innerText,
                     value: option.value.split(" ")[0],
                     disabled: option.disabled,
                     index: index
-                };
-            });
+                }
+            })
+
             this.timeEndSelect.innerHTML = ""
             const startTime = this.timeStartSelect.value.split(" ")[0]
-            const selectedIndex = this.timeStartSelect.selectedIndex;
-            temp.splice(0, selectedIndex)
-            for(let i = 0; i < 11; i++) {
+            const startIndex = temp.findIndex(option => option.value === startTime)
+            for (let i = startIndex+1; i < temp.length; i++) {
                 const option = document.createElement("option")
+                if (temp[i].disabled) {
+                    temp[i].disabled = false
+                    option.value = temp[i].value
+                    option.innerText = temp[i].text
+                    this.timeEndSelect.appendChild(option)
+                    break
+                }
+
                 option.innerText = temp[i].text
                 option.value = temp[i].value
                 option.disabled = temp[i].disabled
-                if(startTime !== option.value) {
-                    this.timeEndSelect.appendChild(option)
-                }
-            }
 
-            console.log("Original", this.timeEndOptions[14]);
-            console.log("temp", temp[14]);
+                this.timeEndSelect.appendChild(option)
+            }
         },
-        getTimeSlots() {
+        getTimeSlots(event) {
             let xhr = new XMLHttpRequest();
             let url = '/get-times';
             xhr.open("POST", url, true);
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     const json = JSON.parse(xhr.response)
-                    console.log(json)
+                    console.log(json.res)
+                    this.timeStartSelect.innerHTML = json.startOptions
+                    this.timeEndSelect.innerHTML = ""
                 }
             };
-
-            //OPRAVIT
-            document.querySelectorAll(".times form input[type='radio']").forEach(radio => {
-                if(radio.selected === true) {
-                    this.formData.append("track", radio.value)
-                }
-            })
+            this.formData.append("track", event.target.value)
             xhr.send(this.formData);
 
             const x = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(1)")
@@ -385,6 +386,7 @@ $db = Database::getInstance();
             y.classList.remove("hidden")
         },
         Back() {
+
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
             document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
         }
