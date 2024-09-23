@@ -87,6 +87,8 @@ $db = Database::getInstance();
                         </div>
                         <div class="times">
                             <form method="post" action="/make-reservation">
+                                <input type="hidden" name="day" id="dayInput">
+                                <input type="hidden" name="month" id="monthInput">
                                 <div class="column">
                                     <div class="radios" style="display: flex">
                                         <label>
@@ -228,10 +230,10 @@ $db = Database::getInstance();
         daysContainer: document.getElementById("daysContainer"),
         timeStartSelect: document.getElementById("timeStart"),
         timeEndSelect: document.getElementById("timeEnd"),
+        dayInput: document.getElementById("dayInput"),
+        monthInput: document.getElementById("monthInput"),
         timeEndOptions: null,
         currentDate: new Date(),
-        redDays: [],
-        yellowDays: [],
         init() {
             this.updateMonth()
             this.generateDays()
@@ -256,6 +258,7 @@ $db = Database::getInstance();
         },
         generateDays() {
             const month = this.currentDate.getMonth() + 1;
+            this.monthInput.value = month
             const year = this.currentDate.getFullYear();
             this.daysContainer.innerHTML = '';
             const numberOfDays = new Date(year, month, 0).getDate();
@@ -303,33 +306,10 @@ $db = Database::getInstance();
         },
         dayClick(number) {
             this.formData.append("day", number)
+            this.dayInput.value = number
+            console.log(number)
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
             document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
-        },
-        updateSelects(data) {
-            this.timeStartSelect.innerHTML = ''
-            this.timeEndSelect.innerHTML = ''
-            data.timeStartSlots.forEach(timeslot => {
-                const option = document.createElement("option")
-                if(timeslot.tracks.length > 0) {
-                    option.value = option.innerText = timeslot.time + " (obsazené dráhy: " + timeslot.tracks.toString() + ")"
-                } else {
-                    option.value = option.innerText = timeslot.time
-                }
-                if(!timeslot.free) option.disabled = true
-                this.timeStartSelect.appendChild(option)
-            })
-            data.timeEndSlots.forEach(timeslot => {
-                const option = document.createElement("option")
-                if(timeslot.tracks.length > 0) {
-                    option.value = option.innerText = timeslot.time + " (obsazené dráhy: " + timeslot.tracks.toString() + ")"
-                } else {
-                    option.value = option.innerText = timeslot.time
-                }
-                if(!timeslot.free) option.disabled = true
-                this.timeEndSelect.appendChild(option)
-            })
-            console.log(data)
         },
         updateTimeEndSlots() {
             if (this.timeEndOptions === null) {
@@ -364,6 +344,9 @@ $db = Database::getInstance();
 
                 this.timeEndSelect.appendChild(option)
             }
+
+            const y = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)")
+            y.classList.remove("hidden")
         },
         getTimeSlots(event) {
             let xhr = new XMLHttpRequest();
@@ -372,7 +355,6 @@ $db = Database::getInstance();
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     const json = JSON.parse(xhr.response)
-                    console.log(json.res)
                     this.timeStartSelect.innerHTML = json.startOptions
                     this.timeEndSelect.innerHTML = ""
                 }
@@ -381,14 +363,17 @@ $db = Database::getInstance();
             xhr.send(this.formData);
 
             const x = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(1)")
-            const y = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)")
             x.classList.remove("hidden")
-            y.classList.remove("hidden")
         },
         Back() {
-
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
             document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
+            this.restartOptions()
+        },
+        restartOptions() {
+            document.querySelectorAll(".reservationForm .page:nth-of-type(2) .column input[type='radio']").forEach(radio => radio.checked = false)
+            document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(1)").classList.add("hidden")
+            document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)").classList.add("hidden")
         }
     }
 
