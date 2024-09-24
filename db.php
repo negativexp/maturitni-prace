@@ -9,6 +9,10 @@ class Database {
     public function __construct() {
         $this->connect();
     }
+    public function checkReservations(): void {
+        $sql = "DELETE FROM dpp_reservations WHERE created < NOW() - INTERVAL 10 MINUTE AND status = 'NEOVĚŘENO'";
+        $this->executeQuery($sql);
+    }
     public static function getInstance() : Database {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -39,6 +43,8 @@ class Database {
                   firstName VARCHAR(50) NOT NULL, 
                   lastName VARCHAR(50) NOT NULL, 
                   email VARCHAR(70) NOT NULL,
+                  created DATETIME NOT NULL,
+                  price INT NOT NULL,
                   status VARCHAR(25) NOT NULL"
             ],
             DB_PREFIX."_allowed_file_types" => [
@@ -183,5 +189,8 @@ class Database {
     public function sanatize($string): string
     {
         return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    }
+    public function getLastInsertedId(): int {
+        return $this->conn->insert_id;
     }
 }

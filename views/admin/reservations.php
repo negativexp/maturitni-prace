@@ -17,6 +17,7 @@ $db = Database::getInstance();
         <table>
             <thead>
                 <th>id</th>
+                <th>Datum Vytvoření</th>
                 <th>Datum</th>
                 <th>Čas</th>
                 <th>Dráha</th>

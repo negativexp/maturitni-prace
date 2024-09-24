@@ -10,6 +10,7 @@ class router {
     {
         $this->db = Database::getInstance();
         $this->db->checkTables();
+        $this->db->checkReservations();
         $parsedURL = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
         $this->checkAllowedFileTypes($parsedURL);
         $this->checkNormalRoutes();
@@ -27,6 +28,7 @@ class router {
     private function checkNormalRoutes(): void {
         $this->get("/", "views/index.php");
         $this->get("/kontakt", "views/kontakt.php");
+        $this->get("/aktivovat-rezervaci", "actions/ChangeResState.php");
         $this->post("/get-times", "actions/getTimes.php");
         $this->post("/make-reservation", "actions/makeReservation.php");
     }

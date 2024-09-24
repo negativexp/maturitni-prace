@@ -19,8 +19,14 @@ $db = Database::getInstance();
     if(isset($_GET["dekujeme"])) {
         echo "<div class='notification'>
                 <h3>Děkujeme za rezervaci!</h3>
-                <p class='warning'>Rezervace bude platná až po potvrzení emailem z důvodu spamu.</p>
+                <p class='warning'>Rezervace bude platná až po potvrzení emailem z důvodu spamu. Do 10 minut rezervace bude smazána a nebude plaťit!</p>
                 <p>Prosíme, zkontrolujte svůj email (včetně složky spam) pro potvrzovací zprávu.</p>
+                </div>";
+    }
+    if(isset($_GET["potvrzeno"])) {
+        echo "<div class='notification'>
+                <h3>Děkujeme za rezervaci!</h3>
+                <p>Vaše rezervace je platná a budem očekávat váš příchod, Děkujeme!</p>
                 </div>";
     }
     ?>
@@ -128,7 +134,7 @@ $db = Database::getInstance();
                                     </label>
                                     <label class="hidden">
                                         <span>Do <span class="warning">*</span></span>
-                                        <select id="timeEnd" name="timeEnd" required>
+                                        <select id="timeEnd" name="timeEnd" required onclick="Reservation.updateCost()">
                                         </select>
                                     </label>
                                 </div>
@@ -144,6 +150,9 @@ $db = Database::getInstance();
                                     <label>
                                         <span>E-mail <span class="warning">*</span></span>
                                         <input type="email" name="email" required/>
+                                    </label>
+                                    <label>
+                                        <p><span class="bold">Cena</span>: <span id="finalCost">...</span></p>
                                     </label>
                                     <label>
                                         <input class="button" type="submit">
@@ -166,7 +175,8 @@ $db = Database::getInstance();
                             <p>Středa/Neděle ZAVŘENO nebo PLNO</p>
                         </div>
                     </div>
-                    <p><span class="bold">Každa hodina</span>: 135,- Kč</p>
+                    <p><span class="bold">Každá hodina</span>: 140,- Kč</p>
+                    <p><span class="bold">Každá půl hodina</span>: 70,- Kč</p>
                 </div>
             </div>
         </div>
@@ -340,6 +350,12 @@ $db = Database::getInstance();
             document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
         },
         updateTimeEndSlots() {
+            const options = document.querySelectorAll("#timeStart option:not(:disabled)")
+            if(options.length === 0) {
+                const y = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)")
+                y.classList.add("hidden")
+                return false
+            }
             if (this.timeEndOptions === null) {
                 this.timeEndOptions = Array.from(this.timeStartSelect.options)
             }
@@ -372,8 +388,30 @@ $db = Database::getInstance();
             }
             const y = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)")
             y.classList.remove("hidden")
+            this.updateCost()
+        },
+        updateCost() {
+            const costPerHalfHour = 70
+            var finalCost = 0
+            const startTime = this.timeStartSelect.value
+            const endTime = this.timeEndSelect.value
+
+            const startIndex = this.timeEndOptions.findIndex(option => option.value === startTime)
+            for (let i = startIndex+1; i < startIndex+11; i++) {
+                if (this.timeEndOptions[i].value === endTime) {
+                    console.log("break")
+                    finalCost += 70
+                    break
+                } else {
+                    console.log("rmdko")
+                    finalCost += 70
+                }
+            }
+            document.getElementById("finalCost").innerText = finalCost+",- CZK"
+            console.log(startTime, endTime)
         },
         getTimeSlots(event) {
+
             let xhr = new XMLHttpRequest();
             let url = '/get-times';
             xhr.open("POST", url, true);
@@ -381,7 +419,7 @@ $db = Database::getInstance();
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     const json = JSON.parse(xhr.response)
                     this.timeStartSelect.innerHTML = json.startOptions
-                    this.timeEndSelect.innerHTML = ""
+                    this.timeEndOptions = Array.from(this.timeStartSelect.options)
                 }
             };
             this.formData.append("track", event.target.value)
@@ -389,6 +427,7 @@ $db = Database::getInstance();
 
             const x = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(1)")
             x.classList.remove("hidden")
+            this.updateTimeEndSlots()
         },
         Back() {
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
