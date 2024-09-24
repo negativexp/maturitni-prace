@@ -160,12 +160,13 @@ $db = Database::getInstance();
                             <p>Volné místa</p>
                         </div>
                         <div class="w33 yellow">
-                            <p>Volné místa</p>
+                            <p>Zabrané místa / Volné místa</p>
                         </div>
                         <div class="w33 red">
                             <p>Středa/Neděle ZAVŘENO nebo PLNO</p>
                         </div>
                     </div>
+                    <p><span class="bold">Každa hodina</span>: 135,- Kč</p>
                 </div>
             </div>
         </div>
@@ -355,7 +356,7 @@ $db = Database::getInstance();
             this.timeEndSelect.innerHTML = ""
             const startTime = this.timeStartSelect.value.split(" ")[0]
             const startIndex = temp.findIndex(option => option.value === startTime)
-            for (let i = startIndex+1; i < temp.length; i++) {
+            for (let i = startIndex+1; i < startIndex+11; i++) {
                 const option = document.createElement("option")
                 if (temp[i].disabled) {
                     temp[i].disabled = false
@@ -364,14 +365,11 @@ $db = Database::getInstance();
                     this.timeEndSelect.appendChild(option)
                     break
                 }
-
                 option.innerText = temp[i].text
                 option.value = temp[i].value
                 option.disabled = temp[i].disabled
-
                 this.timeEndSelect.appendChild(option)
             }
-
             const y = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)")
             y.classList.remove("hidden")
         },
