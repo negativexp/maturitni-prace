@@ -122,14 +122,10 @@ $db = Database::getInstance();
                                             <span>Dráha 3</span>
                                             <input type="radio" value="3" name="track" onchange="Reservation.getTimeSlots(event)" required>
                                         </label>
-                                        <label>
-                                            <span>Dráha 4</span>
-                                            <input type="radio" value="4" name="track" onchange="Reservation.getTimeSlots(event)" required>
-                                        </label>
                                     </div>
                                     <label class="hidden">
                                         <span>Od <span class="warning">*</span></span>
-                                        <select id="timeStart" name="timeStart" onclick="Reservation.updateTimeEndSlots(event)" required>
+                                        <select id="timeStart" name="timeStart" onchange="Reservation.updateTimeEndSlots(event)" required>
                                         </select>
                                     </label>
                                     <label class="hidden">
@@ -152,7 +148,7 @@ $db = Database::getInstance();
                                         <input type="email" name="email" required/>
                                     </label>
                                     <label>
-                                        <p><span class="bold">Cena</span>: <span id="finalCost">...</span></p>
+                                        <p><span class="bold">Cena</span>: <span id="finalCost"></span></p>
                                     </label>
                                     <label>
                                         <input class="button" type="submit">
@@ -300,7 +296,8 @@ $db = Database::getInstance();
             const year = this.currentDate.getFullYear();
             this.daysContainer.innerHTML = '';
             const numberOfDays = new Date(year, month, 0).getDate();
-            for (let i = 1; i <= numberOfDays; i++) {
+            let iritation = this.currentDate.getMonth() === (new Date).getMonth() ? (new Date).getDate()+1 : 1
+            for (let i = iritation; i <= numberOfDays; i++) {
                 const weekday = new Date(year, month - 1, i).getDay();
                 const dayNamesCzech = [
                     'Neděle',
@@ -315,22 +312,34 @@ $db = Database::getInstance();
                 const dayElement = document.createElement('div');
 
                 <?php
-                $reservations = $db->select("dpp_reservations", ["month", "day"], null, null);
+                $reservations = $db->select("dpp_reservations", ["month", "day", "track"], null, null);
                 $reservationDays = [];
                 foreach ($reservations as $reservation) {
                     $reservationDays[] = [
                         'month' => $reservation['month'],
-                        'day' => $reservation['day']
+                        'day' => $reservation['day'],
+                        'track' => $reservation['track']
                     ];
                 }
                 ?>
                 const reservedDays = <?php echo json_encode($reservationDays); ?>;
-                const isReserved = reservedDays.some(reservation =>
-                    reservation.month === month && reservation.day === i
-                );
+                function countReservations(month, day) {
+                    let laneReservations = [0, 0, 0]; // Array to count reservations for lane 1, 2, and 3
+
+                    reservedDays.forEach(reservation => {
+                        if (reservation.month === month && reservation.day === day) {
+                            laneReservations[reservation.track - 1]++;
+                        }
+                    });
+
+                    return laneReservations;
+                }
+                const laneReservations = countReservations(month, i);
+                let isAllTracksReserved = laneReservations.every(count => count >= 1);
+
                 if (weekday === 3 || weekday === 0) {
                     dayElement.className = 'red';
-                } else if (isReserved) {
+                } else if (isAllTracksReserved) {
                     dayElement.className = 'yellow';
                     dayElement.onclick = () => this.dayClick(i);
                 } else {
@@ -338,6 +347,7 @@ $db = Database::getInstance();
                     dayElement.innerText = `${i}: Volné`;
                     dayElement.onclick = () => this.dayClick(i);
                 }
+
                 dayElement.innerText = dayNamesCzech[weekday] + ` (${i}.${month})`;
                 this.daysContainer.appendChild(dayElement);
             }
@@ -345,17 +355,13 @@ $db = Database::getInstance();
         dayClick(number) {
             this.formData.append("day", number)
             this.dayInput.value = number
-            console.log(number)
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
             document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
         },
         updateTimeEndSlots() {
+            this.timeEndSelect.parentElement.classList.remove("hidden")
+
             const options = document.querySelectorAll("#timeStart option:not(:disabled)")
-            if(options.length === 0) {
-                const y = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)")
-                y.classList.add("hidden")
-                return false
-            }
             if (this.timeEndOptions === null) {
                 this.timeEndOptions = Array.from(this.timeStartSelect.options)
             }
@@ -386,8 +392,7 @@ $db = Database::getInstance();
                 option.disabled = temp[i].disabled
                 this.timeEndSelect.appendChild(option)
             }
-            const y = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)")
-            y.classList.remove("hidden")
+
             this.updateCost()
         },
         updateCost() {
@@ -399,19 +404,15 @@ $db = Database::getInstance();
             const startIndex = this.timeEndOptions.findIndex(option => option.value === startTime)
             for (let i = startIndex+1; i < startIndex+11; i++) {
                 if (this.timeEndOptions[i].value === endTime) {
-                    console.log("break")
                     finalCost += 70
                     break
                 } else {
-                    console.log("rmdko")
                     finalCost += 70
                 }
             }
             document.getElementById("finalCost").innerText = finalCost+",- CZK"
-            console.log(startTime, endTime)
         },
         getTimeSlots(event) {
-
             let xhr = new XMLHttpRequest();
             let url = '/get-times';
             xhr.open("POST", url, true);
@@ -419,15 +420,19 @@ $db = Database::getInstance();
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     const json = JSON.parse(xhr.response)
                     this.timeStartSelect.innerHTML = json.startOptions
+                    const defOption = document.createElement("option")
+                    defOption.innerText = "--- VYBERTE ČAS ---"
+                    defOption.defaultSelected = true
+                    defOption.disabled = true
+                    this.timeStartSelect.appendChild(defOption)
                     this.timeEndOptions = Array.from(this.timeStartSelect.options)
+                    this.timeStartSelect.parentElement.classList.remove("hidden")
+                    this.timeEndSelect.parentElement.classList.add("hidden")
+                    document.getElementById("finalCost").innerText = ""
                 }
             };
             this.formData.append("track", event.target.value)
             xhr.send(this.formData);
-
-            const x = document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(1)")
-            x.classList.remove("hidden")
-            this.updateTimeEndSlots()
         },
         Back() {
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
