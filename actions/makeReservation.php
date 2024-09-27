@@ -15,7 +15,6 @@ if(isset($_POST["month"]) && isset($_POST["day"]) && isset($_POST["track"])
     $firstName = $_POST["firstName"];
     $lastName = $_POST["lastName"];
     $email = $_POST["email"];
-    $lastId = $db->getLastInsertedId()+1;
     $start = new DateTime($timeStart);
     $end = new DateTime($timeEnd);
     if ($end <= $start) {
@@ -38,6 +37,7 @@ if(isset($_POST["month"]) && isset($_POST["day"]) && isset($_POST["track"])
     $columns = ["month", "day", "timeStart", "timeEnd", "track", "firstName", "lastName", "email", "price", "status", "created"];
     $values = [$month, $day, $timeStart, $timeEnd, $track, $firstName, $lastName, $email, $totalPrice, "NEOVĚŘENO", $time];
     $db->insert(DB_PREFIX."_reservations", $columns, $values);
+    $lastId = $db->getLastInsertedId();
     $mail = new PHPMailer();
     $mail->IsSMTP();
     $mail->CharSet = 'UTF-8';
@@ -48,7 +48,7 @@ if(isset($_POST["month"]) && isset($_POST["day"]) && isset($_POST["track"])
     $mail->Username   = "strikemaster@email.cz";
     $mail->Password   = "sTRIKEmASTER321";
     $mail->setFrom($mail->Username);
-    $mail->addAddress('mattas7@seznam.cz');
+    $mail->addAddress($email);
     $mail->isHTML(true);                       // Set email format to HTML
     $mail->Subject = 'StrikeMaster - prosím potvrďte rezervaci!';
     $year = date("Y");
@@ -56,7 +56,7 @@ if(isset($_POST["month"]) && isset($_POST["day"]) && isset($_POST["track"])
     $monthName = strftime('%B', $dateObj->getTimestamp());
 $html = "
         <header style='padding: 100px 25px; position: relative; background-color: #f3f8ff; display: flex; justify-content: center;'>
-        <h1 style='z-index: 1; text-transform: uppercase;'>Strike Master</h1>
+        <h1 style='color:black ; z-index: 1; text-transform: uppercase;'>Strike Master</h1>
     </header>
     <main style='background-color: #1d78fa;'>
         <section>
@@ -73,12 +73,12 @@ $html = "
                 <p><strong>Čas:</strong> {$timeStart} - {$timeEnd}</p>
                 <p><strong>Jméno:</strong> {$firstName}</p>
                 <p><strong>Příjmení:</strong> {$lastName}</p>
-                <p><strong>Celková cena:</strong>{$totalPrice},- CZK</p>
+                <p><strong>Celková cena:</strong> {$totalPrice},- CZK</p>
             </div>
         </section>
     </main>
     <footer style='text-align: center; position: relative; padding: 100px 0;'>
-        <p>Strike Master &copy; 2024, Matyáš Schuller</p>
+        <p style='color: black'>Strike Master &copy; 2024, Matyáš Schuller</p>
     </footer>
     ";
     $mail->Body = $html;

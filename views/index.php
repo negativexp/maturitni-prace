@@ -3,15 +3,7 @@ $db = Database::getInstance();
 ?>
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/resources/style.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <title>StrikeMaster</title>
-</head>
+<?php include_once("components/head.php"); ?>
 <body class="hp">
 <main>
     <?php include_once("components/header.php"); ?>
@@ -27,6 +19,12 @@ $db = Database::getInstance();
         echo "<div class='notification'>
                 <h3>Děkujeme za rezervaci!</h3>
                 <p>Vaše rezervace je platná a budem očekávat váš příchod, Děkujeme!</p>
+                </div>";
+    }
+    if(isset($_GET["rezervace-neexistuje"])) {
+        echo "<div class='notification'>
+                <h3>Váš čas na potvrzení vypršel!</h3>
+                <p>Pokud máte problém s vytváření rezervace, zkuste se obraťit na nás telefonicky!</p>
                 </div>";
     }
     ?>
@@ -150,6 +148,7 @@ $db = Database::getInstance();
                                     <label>
                                         <p><span class="bold">Cena</span>: <span id="finalCost"></span></p>
                                     </label>
+                                    <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
                                     <label>
                                         <input class="button" type="submit">
                                     </label>
@@ -165,7 +164,7 @@ $db = Database::getInstance();
                             <p>Volné místa</p>
                         </div>
                         <div class="w33 yellow">
-                            <p>Zabrané místa / Volné místa</p>
+                            <p>Menší kapacita volných míst</p>
                         </div>
                         <div class="w33 red">
                             <p>Středa/Neděle ZAVŘENO nebo PLNO</p>

@@ -4,3 +4,4 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <title>Document</title>
 <link rel="stylesheet" href="/resources/admin/adminStyle.css">
+<script src="/resources/admin/adminScript.js"></script>

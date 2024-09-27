@@ -23,6 +23,9 @@ class router {
         $this->adminMiddleware();
         $this->get("/admin", "views/admin/admin.php");
         $this->get("/admin/reservations", "views/admin/reservations.php");
+        $this->post("/admin/reservations/add", "actions/admin/makeReservation.php");
+        $this->post("/admin/reservations/delete", "actions/admin/deleteReservation.php");
+        $this->post("/admin/reservations/edit", "actions/admin/updateReservation.php");
         $this->getpost("/admin/logout", "actions/admin/logout.php");
     }
     private function checkNormalRoutes(): void {
@@ -30,8 +33,7 @@ class router {
         $this->get("/kontakt", "views/kontakt.php");
         $this->get("/aktivovat-rezervaci", "actions/ChangeResState.php");
         $this->post("/get-times", "actions/getTimes.php");
-        $this->post("/make-reservation", "actions/makeReservation.php");
-    }
+        $this->post("/make-reservation", "actions/makeReservation.php");}
     private function checkAllowedFileTypes($parsedURL): void
     {
         $allowedFileTypes = [];

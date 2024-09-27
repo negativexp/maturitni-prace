@@ -321,8 +321,11 @@ footer::before {
     100% {
         opacity: 0;
     }
-
 }
+.g-recaptcha {
+margin-top: 20px
+}
+
 .hidden {
     opacity: 0;
     visibility: collapse;

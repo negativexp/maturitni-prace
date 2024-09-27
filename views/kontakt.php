@@ -1,14 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="/resources/style.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <title>StrikeMaster</title>
-</head>
+<?php include_once("components/head.php"); ?>
 <body>
 <?php include_once("components/header.php"); ?>
 <main>
