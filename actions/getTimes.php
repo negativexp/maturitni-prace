@@ -1,17 +1,15 @@
 <?php
-if(isset($_POST["month"]) && isset($_POST["day"]) && isset($_POST["track"])) {
-    $month = $_POST["month"];
-    $day = $_POST["day"];
+if(isset($_POST["datetime"]) && isset($_POST["track"])) {
+    $datetime_str = $_POST["datetime"];
+    $datetime = DateTime::createFromFormat('Y-m-d', $datetime_str);
+    $month = $datetime->format('m');
+    $day = $datetime->format('d');
     $track = $_POST["track"];
     $db = Database::getInstance();
-    $reservations = $db->select(DB_PREFIX."_reservations", ["timeStart", "timeEnd", "track"], "month = ? AND day = ? AND track = ?", [$month, $day, $track]);
+    $reservations = $db->select(DB_PREFIX."_reservations", ["timeStart", "timeEnd", "track"], "MONTH(datetime) = ? AND DAY(datetime) = ? AND track = ?", [$month, $day, $track]);
     $dayofweek = date('w', strtotime(date('Y')."-{$month}-{$day}"));
     if($dayofweek == 6) {
         $hours = [
-            ["time" => "16:00", "free" => true],
-            ["time" => "16:30", "free" => true],
-            ["time" => "17:00", "free" => true],
-            ["time" => "17:30", "free" => true],
             ["time" => "18:00", "free" => true],
             ["time" => "18:30", "free" => true],
             ["time" => "19:00", "free" => true],
@@ -55,35 +53,38 @@ if(isset($_POST["month"]) && isset($_POST["day"]) && isset($_POST["track"])) {
             ["time" => "19:00", "free" => true],
         ];
     }
+
     $timeStartSlots = $hours;
-    $timeStartSlots[count($timeStartSlots)-1]["free"] = false;
     $timeEndSlots = $hours;
+
     foreach($reservations as $reservation) {
         $startTimeStamp = strtotime($reservation["timeStart"]);
         $endTimeStamp = strtotime($reservation["timeEnd"]);
+
         foreach($hours as $hourKey => $details) {
             $hourTimeStamp = strtotime($details["time"]);
             if($hourTimeStamp >= $startTimeStamp && $hourTimeStamp < $endTimeStamp) {
                 $timeStartSlots[$hourKey]["free"] = false;
-            }
-            if($hourTimeStamp >= $startTimeStamp && $hourTimeStamp < $endTimeStamp) {
                 $timeEndSlots[$hourKey]["free"] = false;
             }
-
         }
     }
 
+
     $timeStartOptions = "";
     $timeEndOptions = "";
-    foreach($timeStartSlots as $hour) {
-        $disbaled = $hour["free"] ? "" : "disabled";
-        $timeStartOptions .= "<option value='{$hour["time"]}' $disbaled>{$hour["time"]}</option>";
-    }
-    foreach($timeEndSlots as $hour) {
-        $disbaled = $hour["free"] ? "" : "disabled";
-        $timeEndOptions .= "<option value='{$hour["time"]}' $disbaled>{$hour["time"]}</option>";
-    }
-    echo json_encode(["startOptions" => $timeStartOptions]);
 
+    foreach($timeStartSlots as $hour) {
+        $disabled = $hour["free"] ? "" : "disabled";
+        $timeStartOptions .= "<option value='{$hour["time"]}' $disabled>{$hour["time"]}</option>";
+    }
+
+    foreach($timeEndSlots as $hour) {
+        $disabled = $hour["free"] ? "" : "disabled";
+        $timeEndOptions .= "<option value='{$hour["time"]}' $disabled>{$hour["time"]}</option>";
+    }
+
+
+    echo json_encode(["startOptions" => $timeStartOptions, "endOptions" => $timeEndOptions]);
 }
 exit();

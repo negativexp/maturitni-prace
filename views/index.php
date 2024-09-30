@@ -44,12 +44,15 @@ $db = Database::getInstance();
     <section>
         <div class="w60">
             <div class="gallery">
-                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
-                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
-                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
-                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
-                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
-                <img src="/resources/logo.png" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie1.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie2.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie4.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie4.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie1.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie2.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie2.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie4.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
+                <img src="/resources/galerie1.jpg" alt="Fotky Galerie StrikeMaster" title="Fotky Galerie StrikeMaster">
             </div>
         </div>
         <div class="w40">
@@ -103,9 +106,8 @@ $db = Database::getInstance();
                             </div>
                         </div>
                         <div class="times">
-                            <form method="post" action="/make-reservation">
-                                <input type="hidden" name="day" id="dayInput">
-                                <input type="hidden" name="month" id="monthInput">
+                            <form method="post" action="/make-reservation" id="finalForm">
+                                <input type="hidden" name="datetime" id="datetimeInput">
                                 <div class="column">
                                     <div class="radios" style="display: flex">
                                         <label>
@@ -148,7 +150,7 @@ $db = Database::getInstance();
                                     <label>
                                         <p><span class="bold">Cena</span>: <span id="finalCost"></span></p>
                                     </label>
-                                    <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+                                    <div class="g-recaptcha" data-sitekey="6LdPkVAqAAAAAOh4eDokLVMsD0meC_XCeYOYIGY-"></div>
                                     <label>
                                         <input class="button" type="submit">
                                     </label>
@@ -167,7 +169,7 @@ $db = Database::getInstance();
                             <p>Menší kapacita volných míst</p>
                         </div>
                         <div class="w33 red">
-                            <p>Středa/Neděle ZAVŘENO nebo PLNO</p>
+                            <p>ZAVŘENO</p>
                         </div>
                     </div>
                     <p><span class="bold">Každá hodina</span>: 140,- Kč</p>
@@ -256,199 +258,207 @@ $db = Database::getInstance();
 
 <script>
     const Reservation = {
-        formData: new FormData(),
         month: document.getElementById("month"),
         monthLeft: document.getElementById("monthLeft"),
         monthRight: document.getElementById("monthRight"),
         daysContainer: document.getElementById("daysContainer"),
         timeStartSelect: document.getElementById("timeStart"),
         timeEndSelect: document.getElementById("timeEnd"),
-        dayInput: document.getElementById("dayInput"),
-        monthInput: document.getElementById("monthInput"),
+        datetime: document.getElementById("datetimeInput"),
         timeEndOptions: null,
         currentDate: new Date(),
+
         init() {
-            this.updateMonth()
-            this.generateDays()
+            this.updateMonth();
+            this.generateDays();
         },
+
         updateMonth() {
-            this.month.innerText = this.currentDate.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' })
-            this.formData.append("month", this.currentDate.getMonth() + 1)
+            this.month.innerText = this.currentDate.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' });
         },
+
         nextMonth() {
-            this.currentDate.setMonth(this.currentDate.getMonth() + 1)
-            this.updateMonth()
-            this.generateDays()
-            this.monthRight.classList.toggle("hidden")
-            this.monthLeft.classList.toggle("hidden")
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+            this.updateMonth();
+            this.generateDays();
+            this.toggleArrows();
         },
+
         previousMonth() {
-            this.currentDate.setMonth(this.currentDate.getMonth() - 1)
-            this.updateMonth()
-            this.generateDays()
-            this.monthLeft.classList.toggle("hidden")
-            this.monthRight.classList.toggle("hidden")
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+            this.updateMonth();
+            this.generateDays();
+            this.toggleArrows();
         },
+
+        toggleArrows() {
+            const today = new Date();
+            if(this.currentDate.getMonth() > today.getMonth()) {
+                this.monthRight.classList.add("hidden");
+                this.monthLeft.classList.remove("hidden");
+            }
+            if(this.currentDate.getMonth() === today.getMonth()) {
+                this.monthRight.classList.remove("hidden");
+                this.monthLeft.classList.add("hidden");
+            }
+        },
+
         generateDays() {
-            const month = this.currentDate.getMonth() + 1;
-            this.monthInput.value = month
+            const month = this.currentDate.getMonth();
             const year = this.currentDate.getFullYear();
             this.daysContainer.innerHTML = '';
-            const numberOfDays = new Date(year, month, 0).getDate();
-            let iritation = this.currentDate.getMonth() === (new Date).getMonth() ? (new Date).getDate()+1 : 1
-            for (let i = iritation; i <= numberOfDays; i++) {
-                const weekday = new Date(year, month - 1, i).getDay();
-                const dayNamesCzech = [
-                    'Neděle',
-                    'Pondělí',
-                    'Úterý',
-                    'Středa',
-                    'Čtvrtek',
-                    'Pátek',
-                    'Sobota'
-                ];
 
+            // Get number of days in the month
+            const numberOfDays = new Date(year, month + 1, 0).getDate(); // Last day of the month
+            const startDay = this.currentDate.getMonth() === (new Date).getMonth() ? (new Date).getDate() : 1
+            for (let i = startDay; i <= numberOfDays; i++) {
+                const weekday = new Date(year, month, i).getDay();
+                const dayNamesCzech = ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota'];
                 const dayElement = document.createElement('div');
 
                 <?php
-                $reservations = $db->select("dpp_reservations", ["month", "day", "track"], null, null);
+                $reservations = $db->select("dpp_reservations", ["datetime", "track"], null, null);
                 $reservationDays = [];
                 foreach ($reservations as $reservation) {
+                    $dateTime = new DateTime($reservation['datetime']);
                     $reservationDays[] = [
-                        'month' => $reservation['month'],
-                        'day' => $reservation['day'],
+                        'date' => $dateTime->format('Y-m-d'),
                         'track' => $reservation['track']
                     ];
                 }
                 ?>
                 const reservedDays = <?php echo json_encode($reservationDays); ?>;
-                function countReservations(month, day) {
-                    let laneReservations = [0, 0, 0]; // Array to count reservations for lane 1, 2, and 3
 
+                function countReservations(date) {
+                    let laneReservations = [0, 0, 0]; // For lanes 1, 2, 3
                     reservedDays.forEach(reservation => {
-                        if (reservation.month === month && reservation.day === day) {
+                        if (reservation.date === date) {
                             laneReservations[reservation.track - 1]++;
                         }
                     });
-
                     return laneReservations;
                 }
-                const laneReservations = countReservations(month, i);
-                let isAllTracksReserved = laneReservations.every(count => count >= 1);
 
-                if (weekday === 3 || weekday === 0) {
-                    dayElement.className = 'red';
-                } else if (isAllTracksReserved) {
-                    dayElement.className = 'yellow';
+                const date = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                const laneReservations = countReservations(date);
+                const reservedLaneCount = laneReservations.filter(count => count > 0).length;
+                const isAllTracksReserved = reservedLaneCount === 3;
+                const isTwoTracksReserved = reservedLaneCount === 2;
+
+                // Add color coding and logic for reservations
+                if (weekday === 3 || weekday === 0 || isAllTracksReserved) {
+                    dayElement.className = 'red'; // Fully booked or closed
+                } else if (isTwoTracksReserved) {
+                    dayElement.className = 'yellow'; // Limited availability
                     dayElement.onclick = () => this.dayClick(i);
                 } else {
-                    dayElement.className = 'green';
+                    dayElement.className = 'green'; // Available
                     dayElement.innerText = `${i}: Volné`;
                     dayElement.onclick = () => this.dayClick(i);
                 }
 
-                dayElement.innerText = dayNamesCzech[weekday] + ` (${i}.${month})`;
+                dayElement.innerText = dayNamesCzech[weekday] + ` (${i}.${month + 1})`;
                 this.daysContainer.appendChild(dayElement);
             }
         },
-        dayClick(number) {
-            this.formData.append("day", number)
-            this.dayInput.value = number
-            document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
-            document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
+
+        dayClick(dayNumber) {
+            this.currentDate.setDate(dayNumber)
+
+            // Set ISO date format
+            this.datetime.value = this.currentDate.toISOString().split("T")[0];
+
+            document.querySelector(".reservationForm .page:nth-of-type(1)").classList.add("hide");
+            document.querySelector(".reservationForm .page:nth-of-type(2)").classList.remove("hide");
         },
-        updateTimeEndSlots() {
-            this.timeEndSelect.parentElement.classList.remove("hidden")
 
-            const options = document.querySelectorAll("#timeStart option:not(:disabled)")
-            if (this.timeEndOptions === null) {
-                this.timeEndOptions = Array.from(this.timeStartSelect.options)
-            }
-
-            let temp = this.timeEndOptions.map((option, index) => {
-                return {
-                    text: option.innerText,
-                    value: option.value.split(" ")[0],
-                    disabled: option.disabled,
-                    index: index
-                }
-            })
-
-            this.timeEndSelect.innerHTML = ""
-            const startTime = this.timeStartSelect.value.split(" ")[0]
-            const startIndex = temp.findIndex(option => option.value === startTime)
-            for (let i = startIndex+1; i < startIndex+11; i++) {
-                const option = document.createElement("option")
-                if (temp[i].disabled) {
-                    temp[i].disabled = false
-                    option.value = temp[i].value
-                    option.innerText = temp[i].text
-                    this.timeEndSelect.appendChild(option)
-                    break
-                }
-                option.innerText = temp[i].text
-                option.value = temp[i].value
-                option.disabled = temp[i].disabled
-                this.timeEndSelect.appendChild(option)
-            }
-
-            this.updateCost()
-        },
-        updateCost() {
-            const costPerHalfHour = 70
-            var finalCost = 0
-            const startTime = this.timeStartSelect.value
-            const endTime = this.timeEndSelect.value
-
-            const startIndex = this.timeEndOptions.findIndex(option => option.value === startTime)
-            for (let i = startIndex+1; i < startIndex+11; i++) {
-                if (this.timeEndOptions[i].value === endTime) {
-                    finalCost += 70
-                    break
-                } else {
-                    finalCost += 70
-                }
-            }
-            document.getElementById("finalCost").innerText = finalCost+",- CZK"
-        },
         getTimeSlots(event) {
-            let xhr = new XMLHttpRequest();
-            let url = '/get-times';
+            const xhr = new XMLHttpRequest();
+            const url = '/get-times';
             xhr.open("POST", url, true);
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    const json = JSON.parse(xhr.response)
-                    this.timeStartSelect.innerHTML = json.startOptions
-                    const defOption = document.createElement("option")
-                    defOption.innerText = "--- VYBERTE ČAS ---"
-                    defOption.defaultSelected = true
-                    defOption.disabled = true
-                    this.timeStartSelect.appendChild(defOption)
-                    this.timeEndOptions = Array.from(this.timeStartSelect.options)
-                    this.timeStartSelect.parentElement.classList.remove("hidden")
-                    this.timeEndSelect.parentElement.classList.add("hidden")
-                    document.getElementById("finalCost").innerText = ""
+                    const json = JSON.parse(xhr.response);
+                    this.timeStartSelect.innerHTML = json.startOptions;
+
+                    const defOption = document.createElement("option");
+                    defOption.innerText = "--- VYBERTE ČAS ---";
+                    defOption.defaultSelected = true;
+                    defOption.disabled = true;
+                    this.timeStartSelect.appendChild(defOption);
+
+                    this.timeEndOptions = Array.from(this.timeStartSelect.options);
+                    this.timeStartSelect.parentElement.classList.remove("hidden");
+                    this.timeEndSelect.parentElement.classList.add("hidden");
+                    document.getElementById("finalCost").innerText = "";
                 }
             };
-            this.formData.append("track", event.target.value)
-            xhr.send(this.formData);
+            const formData = new FormData()
+            formData.append("track", event.target.value)
+            formData.append("datetime", this.currentDate.toISOString().split("T")[0])
+            xhr.send(formData);
         },
-        Back() {
-            document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide")
-            document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide")
-            this.restartOptions()
+        updateTimeEndSlots() {
+            this.timeEndSelect.parentElement.classList.remove("hidden");
+
+            const options = document.querySelectorAll("#timeStart option:not(:disabled)");
+            if (this.timeEndOptions === null) {
+                this.timeEndOptions = Array.from(this.timeStartSelect.options);
+            }
+
+            const startTime = this.timeStartSelect.value.split(" ")[0];
+            const temp = this.timeEndOptions.map(option => ({
+                text: option.innerText,
+                value: option.value.split(" ")[0],
+                disabled: option.disabled
+            }));
+
+            this.timeEndSelect.innerHTML = "";
+            const startIndex = temp.findIndex(option => option.value === startTime);
+            for (let i = startIndex + 1; i < startIndex + 11 && i < temp.length; i++) {
+                const option = document.createElement("option");
+                option.innerText = temp[i].text;
+                option.value = temp[i].value;
+                option.disabled = temp[i].disabled;
+                this.timeEndSelect.appendChild(option);
+            }
+
+            this.updateCost();
+        },
+        updateCost() {
+            const costPerHalfHour = 70;
+            let finalCost = 0;
+            const startTime = this.timeStartSelect.value;
+            const endTime = this.timeEndSelect.value;
+
+            const startIndex = this.timeEndOptions.findIndex(option => option.value === startTime);
+            for (let i = startIndex + 1; i < this.timeEndOptions.length; i++) {
+                if (this.timeEndOptions[i].value === endTime) {
+                    finalCost += costPerHalfHour;
+                    break;
+                } else {
+                    finalCost += costPerHalfHour;
+                }
+            }
+            document.getElementById("finalCost").innerText = `${finalCost},- CZK`;
         },
         restartOptions() {
-            document.querySelectorAll(".reservationForm .page:nth-of-type(2) .column input[type='radio']").forEach(radio => radio.checked = false)
-            document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(1)").classList.add("hidden")
-            document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)").classList.add("hidden")
-        }
-    }
+            document.querySelectorAll(".reservationForm .page:nth-of-type(2) .column input[type='radio']").forEach(radio => radio.checked = false);
+            document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(1)").classList.add("hidden");
+            document.querySelector(".reservationForm .page:nth-of-type(2) .column > label:nth-of-type(2)").classList.add("hidden");
+        },
+        Back() {
+            document.querySelector(".reservationForm .page:nth-of-type(1)").classList.toggle("hide");
+            document.querySelector(".reservationForm .page:nth-of-type(2)").classList.toggle("hide");
+            this.restartOptions();
+        },
+    };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        Reservation.init()
-    })
-
+    // Initialize on page load
+    document.addEventListener("DOMContentLoaded", () => {
+        Reservation.init();
+    });
 </script>
+
 </body>
 </html>

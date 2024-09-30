@@ -247,10 +247,14 @@ div.green {
     flex-flow: column;
 }
 .reservationForm label:has(input[type="radio"]) {
-    flex-flow: row;
+    align-items: center;
 }
 .reservationForm .column:nth-of-type(2) label:last-child {
     margin-top: 50px;
+}
+.radios {
+    justify-content: center;
+    gap: var(--gap3);
 }
 
 .reservationForm .page .times .column { width: 50% }
@@ -344,6 +348,12 @@ hr {
 .tacen {
     text-align: center;
 }
+input[type="radio"] {
+    background: red;
+    display: flex;
+    width: 32px;
+    height: 32px;
+}
 .w100 { width: 100%; max-width: var(--maxWidth); }
 .w75 { width: 75%; max-width: calc(var(--maxWidth) * 0.75); }
 .w70 { width: 70%; max-width: calc(var(--maxWidth) * 0.70); }
@@ -379,6 +389,12 @@ hr {
     }
     .reservationForm .page .days > div {
         width: calc(25% - 5px);
+    }
+    #finalForm {
+        flex-wrap: wrap;
+    }
+    #finalForm .column {
+        width: 100%;
     }
 }
 

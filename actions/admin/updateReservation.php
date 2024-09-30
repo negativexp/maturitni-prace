@@ -37,8 +37,8 @@ if (isset($_POST['id'], $_POST['date'], $_POST['timeStart'], $_POST['timeEnd'], 
     $totalPrice = $intervalCount * $pricePerHalfHour;
     $time = date('Y-m-d H:i:s');
 
-    $columns = ["month", "day", "timeStart", "timeEnd", "track", "firstName", "lastName", "email", "price", "status"];
-    $values = [$month, $day, $timeStart, $timeEnd, $track, $firstName, $lastName, $email, $totalPrice, $originalStatus];
+    $columns = ["datetime", "timeStart", "timeEnd", "track", "firstName", "lastName", "email", "price", "status"];
+    $values = [$date, $timeStart, $timeEnd, $track, $firstName, $lastName, $email, $totalPrice, $originalStatus];
 
     $condition = "id = ?";
     $params = [$id];

@@ -35,8 +35,7 @@ class Database {
             ],
             DB_PREFIX."_reservations" => [
                 'columns' => "id INT AUTO_INCREMENT PRIMARY KEY, 
-                  month TINYINT UNSIGNED NOT NULL, 
-                  day TINYINT UNSIGNED NOT NULL, 
+                  datetime DATETIME NOT NULL, 
                   timeStart TIME NOT NULL, 
                   timeEnd TIME NOT NULL, 
                   track TINYINT UNSIGNED NOT NULL, 

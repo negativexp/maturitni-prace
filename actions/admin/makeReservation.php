@@ -5,8 +5,6 @@ if(isset($_POST["date"]) && isset($_POST["timeStart"])
 && isset($_POST["email"])) {
     $date = $_POST["date"];
     $dateObj = new DateTime($date);
-    $month = $dateObj->format('m');
-    $day = $dateObj->format('j');
     $timeStart = $_POST["timeStart"];
     $timeEnd = $_POST["timeEnd"];
     $track = $_POST["track"];
@@ -32,8 +30,8 @@ if(isset($_POST["date"]) && isset($_POST["timeStart"])
     $totalPrice = $intervalCount * $pricePerHalfHour;
 
     $db  = Database::getInstance();
-    $columns = ["month", "day", "timeStart", "timeEnd", "track", "firstName", "lastName", "email", "price", "status", "created"];
-    $values = [$month, $day, $timeStart, $timeEnd, $track, $firstName, $lastName, $email, $totalPrice, "AKTIVNÍ", $time];
+    $columns = ["datetime", "timeStart", "timeEnd", "track", "firstName", "lastName", "email", "price", "status", "created"];
+    $values = [$date, $timeStart, $timeEnd, $track, $firstName, $lastName, $email, $totalPrice, "AKTIVNÍ", $time];
     $db->insert(DB_PREFIX."_reservations", $columns, $values);
     header("location: /admin/reservations");
 }

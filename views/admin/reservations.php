@@ -37,9 +37,12 @@ $db = Database::getInstance();
                 echo "<tr>";
                 $created = $reservation["created"];
                 $date = new DateTime($created);
+
+                $datetime = (new DateTime($reservation["datetime"]))->format('d.m.Y');
+
                 echo "<input type='hidden' value='{$reservation["id"]}'>";
                 echo "<td>" . $date->format('d.m.Y H:i:s') . "</td>";
-                echo "<td>{$reservation["day"]}.{$reservation["month"]}.{$year}</td>";
+                echo "<td>{$datetime}</td>";
                 echo "<td>{$timestart} - {$timeend}</td>";
                 echo "<td>{$reservation["track"]}</td>";
                 echo "<td>{$reservation["firstName"]}</td>";
