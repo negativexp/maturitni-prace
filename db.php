@@ -74,7 +74,7 @@ class Database {
             }
         }
     }
-    public function select(string $dbname, array $columns, ?string $condition, ?array $params, bool $singleRow = false): null|array|string {
+    public function select(string $dbname, array $columns, ?string $condition, ?array $params, bool $singleRow = false) {
         $columnsStr = implode(",", $columns);
         $sql = "SELECT {$columnsStr} FROM {$dbname}";
         if(!empty($condition)) {
@@ -126,19 +126,20 @@ class Database {
 
         return $this->executeQuery($sql, $params, false);
     }
-    public function fetchRows($result): array|null {
+    public function fetchRows($result) {
         $rows = [];
         while ($row = $result->fetch_assoc()) {
             $rows[] = $row;
         }
         return $rows;
     }
-    public function fetchRow($result): array|null {
+    public function fetchRow($result) {
         if ($row = $result->fetch_assoc()) {
             return $row;
         }
         return null;
     }
+
     private function disconnect() {
         $this->conn->close();
     }

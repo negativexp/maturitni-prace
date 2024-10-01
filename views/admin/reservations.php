@@ -10,6 +10,11 @@ $db = Database::getInstance();
     <header>
         <h1>Rezervace</h1>
         <div class="options">
+            <form style="flex-flow: row; gap: var(--gap1)" method="get" action="/admin/reservations">
+                <input value="<?= isset($_GET["query"]) ? $_GET["query"] : ""  ?>" name="query" type="text">
+                <input value="<?= isset($_GET["date"]) ? $_GET["date"] : ""  ?>" type="date" name="date">
+                <input type="submit" value="Hledat">
+            </form>
             <a class="button" onclick="openForm('formPopupAddReservation')">Vytvořit rezervaci</a>
         </div>
     </header>
@@ -29,7 +34,28 @@ $db = Database::getInstance();
             </thead>
             <tbody>
             <?php
-            $reservations = $db->select(DB_PREFIX."_reservations", ["*"], null, null);
+
+            if (isset($_GET["query"]) || isset($_GET["date"])) {
+                $date = $_GET["date"];
+                $searchText = $_GET["query"];
+                $columns = ['datetime', 'timestart', 'timeend', 'track', 'firstName', 'lastName', 'email', 'created', 'price', 'status'];
+                $conditions = [];
+                $parameters = [];
+                if (!empty($searchText)) {
+                    foreach ($columns as $column) {
+                        $conditions[] = "$column LIKE ?";
+                        $parameters[] = "%$searchText%"; // Use wildcards for LIKE
+                    }
+                }
+                if (!empty($date)) {
+                    $conditions[] = "DATE(datetime) = ?";
+                    $parameters[] = $date;
+                }
+                $whereClause = implode(' OR ', $conditions);
+                $reservations = $db->select(DB_PREFIX."_reservations", ["*"], $whereClause, $parameters);
+            } else {
+                $reservations = $db->select(DB_PREFIX."_reservations", ["*"], null, null);
+            }
             $year = date("Y");
             foreach ($reservations as $reservation) {
                 $timestart = substr($reservation["timeStart"], 0, -3);

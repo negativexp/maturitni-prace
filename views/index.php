@@ -68,7 +68,7 @@ $db = Database::getInstance();
             <hr>
             <p><span class="bold">Pátek</span>: 8:00 - 19:00</p>
             <hr>
-            <p><span class="bold">Sobota</span>: 16:00 - 1:00</p>
+            <p><span class="bold">Sobota</span>: 8:00 - 19:00</p>
             <hr>
             <p><span class="bold">Neděle</span>: ZAVŘENO</p>
         </div>
@@ -307,57 +307,84 @@ $db = Database::getInstance();
             const month = this.currentDate.getMonth();
             const year = this.currentDate.getFullYear();
             this.daysContainer.innerHTML = '';
-
-            // Get number of days in the month
             const numberOfDays = new Date(year, month + 1, 0).getDate(); // Last day of the month
-            const startDay = this.currentDate.getMonth() === (new Date).getMonth() ? (new Date).getDate() : 1
+            const startDay = this.currentDate.getMonth() === (new Date).getMonth() ? (new Date).getDate() : 1;
+
+            <?php
+            $db = Database::getInstance();
+            $reservations = $db->select(DB_PREFIX . "_reservations", ["timeStart", "timeEnd", "track", "datetime"], "MONTH(datetime) = ?", [date('m')]);
+
+            $reservationDays = [];
+            foreach ($reservations as $reservation) {
+                $dateTime = new DateTime($reservation['datetime']);
+                $dateKey = $dateTime->format('Y-m-d');
+                if (!isset($reservationDays[$dateKey])) {
+                    $reservationDays[$dateKey] = [];
+                }
+                $reservationDays[$dateKey][] = $reservation;
+            }
+            ?>
+            const reservations = <?php echo json_encode($reservationDays); ?>; // Pass reservation data from PHP
+            console.log(reservations);
+
             for (let i = startDay; i <= numberOfDays; i++) {
+                const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                const dailyReservations = reservations[dateKey] || [];
+                console.log(`Daily Reservations for ${dateKey}:`, dailyReservations); // Log daily reservations
+
                 const weekday = new Date(year, month, i).getDay();
                 const dayNamesCzech = ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota'];
                 const dayElement = document.createElement('div');
 
-                <?php
-                $reservations = $db->select("dpp_reservations", ["datetime", "track"], null, null);
-                $reservationDays = [];
-                foreach ($reservations as $reservation) {
-                    $dateTime = new DateTime($reservation['datetime']);
-                    $reservationDays[] = [
-                        'date' => $dateTime->format('Y-m-d'),
-                        'track' => $reservation['track']
-                    ];
-                }
-                ?>
-                const reservedDays = <?php echo json_encode($reservationDays); ?>;
+                // Initialize an array to hold the number of free slots for each track
+                const freeSlotsByTrack = [0, 0, 0]; // [track1, track2, track3]
 
-                function countReservations(date) {
-                    let laneReservations = [0, 0, 0]; // For lanes 1, 2, 3
-                    reservedDays.forEach(reservation => {
-                        if (reservation.date === date) {
-                            laneReservations[reservation.track - 1]++;
+                const hours = weekday === 6 ? // Determine available hours based on the day
+                    [
+                        "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
+                        "22:00", "22:30", "23:00", "23:30", "00:00", "00:30", "01:00"
+                    ] :
+                    [
+                        "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+                        "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+                        "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00"
+                    ];
+
+                // Check each track and each hour slot for reservations
+                hours.forEach(hour => {
+                    [1, 2, 3].forEach(track => {
+                        const isReserved = dailyReservations.some(reservation => {
+                            const startTime = reservation['timeStart'];
+                            const endTime = reservation['timeEnd'];
+                            const reservedTrack = reservation['track'];
+
+                            // Check if the hour is reserved for the current track
+                            return reservedTrack == track && hour >= startTime && hour < endTime;
+                        });
+
+                        // If the time slot is not reserved, increment the count for the current track
+                        if (!isReserved) {
+                            freeSlotsByTrack[track - 1]++; // track-1 to map to array index
                         }
                     });
-                    return laneReservations;
-                }
+                });
 
-                const date = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-                const laneReservations = countReservations(date);
-                const reservedLaneCount = laneReservations.filter(count => count > 0).length;
-                const isAllTracksReserved = reservedLaneCount === 3;
-                const isTwoTracksReserved = reservedLaneCount === 2;
+                // Calculate total available slots across all tracks
+                const totalFreeSlots = freeSlotsByTrack.reduce((sum, slots) => sum + slots, 0);
+                console.log(`Free slots count for ${dateKey} (Track 1: ${freeSlotsByTrack[0]}, Track 2: ${freeSlotsByTrack[1]}, Track 3: ${freeSlotsByTrack[2]}): ${totalFreeSlots}`);
 
-                // Add color coding and logic for reservations
-                if (weekday === 3 || weekday === 0 || isAllTracksReserved) {
-                    dayElement.className = 'red'; // Fully booked or closed
-                } else if (isTwoTracksReserved) {
-                    dayElement.className = 'yellow'; // Limited availability
+                // Determine the class based on total free slots count
+                if (totalFreeSlots < 10 || weekday === 0 || weekday === 3) {
+                    dayElement.className = 'red'; // No free slots or less than 10 free slots
+                } else if (totalFreeSlots <= 22) {
+                    dayElement.className = 'yellow'; // Less than or equal to 10 free slots
                     dayElement.onclick = () => this.dayClick(i);
                 } else {
-                    dayElement.className = 'green'; // Available
-                    dayElement.innerText = `${i}: Volné`;
+                    dayElement.className = 'green'; // More than 10 free slots
                     dayElement.onclick = () => this.dayClick(i);
                 }
 
-                dayElement.innerText = dayNamesCzech[weekday] + ` (${i}.${month + 1})`;
+                dayElement.innerText += `${dayNamesCzech[weekday]} - ${i}.${month + 1}`;
                 this.daysContainer.appendChild(dayElement);
             }
         },
