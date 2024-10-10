@@ -272,25 +272,21 @@ $db = Database::getInstance();
             this.updateMonth();
             this.generateDays();
         },
-
         updateMonth() {
             this.month.innerText = this.currentDate.toLocaleString('cs-CZ', { month: 'long', year: 'numeric' });
         },
-
         nextMonth() {
             this.currentDate.setMonth(this.currentDate.getMonth() + 1);
             this.updateMonth();
             this.generateDays();
             this.toggleArrows();
         },
-
         previousMonth() {
             this.currentDate.setMonth(this.currentDate.getMonth() - 1);
             this.updateMonth();
             this.generateDays();
             this.toggleArrows();
         },
-
         toggleArrows() {
             const today = new Date();
             if(this.currentDate.getMonth() > today.getMonth()) {
@@ -302,12 +298,11 @@ $db = Database::getInstance();
                 this.monthLeft.classList.add("hidden");
             }
         },
-
         generateDays() {
             const month = this.currentDate.getMonth();
             const year = this.currentDate.getFullYear();
             this.daysContainer.innerHTML = '';
-            const numberOfDays = new Date(year, month + 1, 0).getDate(); // Last day of the month
+            const numberOfDays = new Date(year, month + 1, 0).getDate();
             const startDay = this.currentDate.getMonth() === (new Date).getMonth() ? (new Date).getDate() : 1;
 
             <?php
@@ -321,66 +316,48 @@ $db = Database::getInstance();
                 if (!isset($reservationDays[$dateKey])) {
                     $reservationDays[$dateKey] = [];
                 }
+                unset($reservation["datetime"]);
                 $reservationDays[$dateKey][] = $reservation;
             }
             ?>
-            const reservations = <?php echo json_encode($reservationDays); ?>; // Pass reservation data from PHP
-            console.log(reservations);
+            const reservations = <?php echo json_encode($reservationDays); ?>;
 
             for (let i = startDay; i <= numberOfDays; i++) {
                 const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
                 const dailyReservations = reservations[dateKey] || [];
-                console.log(`Daily Reservations for ${dateKey}:`, dailyReservations); // Log daily reservations
-
                 const weekday = new Date(year, month, i).getDay();
                 const dayNamesCzech = ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota'];
                 const dayElement = document.createElement('div');
-
-                // Initialize an array to hold the number of free slots for each track
                 const freeSlotsByTrack = [0, 0, 0]; // [track1, track2, track3]
-
-                const hours = weekday === 6 ? // Determine available hours based on the day
-                    [
-                        "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
-                        "22:00", "22:30", "23:00", "23:30", "00:00", "00:30", "01:00"
-                    ] :
+                const hours =
                     [
                         "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
                         "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
                         "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00"
                     ];
-
-                // Check each track and each hour slot for reservations
                 hours.forEach(hour => {
                     [1, 2, 3].forEach(track => {
                         const isReserved = dailyReservations.some(reservation => {
                             const startTime = reservation['timeStart'];
                             const endTime = reservation['timeEnd'];
                             const reservedTrack = reservation['track'];
-
-                            // Check if the hour is reserved for the current track
-                            return reservedTrack == track && hour >= startTime && hour < endTime;
+                            return reservedTrack === track && hour >= startTime && hour < endTime;
                         });
-
-                        // If the time slot is not reserved, increment the count for the current track
                         if (!isReserved) {
-                            freeSlotsByTrack[track - 1]++; // track-1 to map to array index
+                            freeSlotsByTrack[track - 1]++;
                         }
                     });
                 });
 
-                // Calculate total available slots across all tracks
                 const totalFreeSlots = freeSlotsByTrack.reduce((sum, slots) => sum + slots, 0);
-                console.log(`Free slots count for ${dateKey} (Track 1: ${freeSlotsByTrack[0]}, Track 2: ${freeSlotsByTrack[1]}, Track 3: ${freeSlotsByTrack[2]}): ${totalFreeSlots}`);
-
-                // Determine the class based on total free slots count
-                if (totalFreeSlots < 10 || weekday === 0 || weekday === 3) {
-                    dayElement.className = 'red'; // No free slots or less than 10 free slots
-                } else if (totalFreeSlots <= 22) {
-                    dayElement.className = 'yellow'; // Less than or equal to 10 free slots
+                console.log(totalFreeSlots)
+                if (totalFreeSlots < 4 || weekday === 0 || weekday === 3) {
+                    dayElement.className = 'red';
+                } else if (totalFreeSlots <= 25) {
+                    dayElement.className = 'yellow';
                     dayElement.onclick = () => this.dayClick(i);
                 } else {
-                    dayElement.className = 'green'; // More than 10 free slots
+                    dayElement.className = 'green';
                     dayElement.onclick = () => this.dayClick(i);
                 }
 
@@ -388,17 +365,13 @@ $db = Database::getInstance();
                 this.daysContainer.appendChild(dayElement);
             }
         },
-
         dayClick(dayNumber) {
             this.currentDate.setDate(dayNumber)
-
-            // Set ISO date format
             this.datetime.value = this.currentDate.toISOString().split("T")[0];
 
             document.querySelector(".reservationForm .page:nth-of-type(1)").classList.add("hide");
             document.querySelector(".reservationForm .page:nth-of-type(2)").classList.remove("hide");
         },
-
         getTimeSlots(event) {
             const xhr = new XMLHttpRequest();
             const url = '/get-times';
@@ -406,7 +379,8 @@ $db = Database::getInstance();
             xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     const json = JSON.parse(xhr.response);
-                    this.timeStartSelect.innerHTML = json.startOptions;
+                    this.timeStartSelect.innerHTML = json.startOptions
+                    this.timeEndSelect.innerHTML = json.endOptions
 
                     const defOption = document.createElement("option");
                     defOption.innerText = "--- VYBERTE ČAS ---";
@@ -414,7 +388,7 @@ $db = Database::getInstance();
                     defOption.disabled = true;
                     this.timeStartSelect.appendChild(defOption);
 
-                    this.timeEndOptions = Array.from(this.timeStartSelect.options);
+                    this.timeEndOptions = Array.from(this.timeEndSelect.options);
                     this.timeStartSelect.parentElement.classList.remove("hidden");
                     this.timeEndSelect.parentElement.classList.add("hidden");
                     document.getElementById("finalCost").innerText = "";
@@ -428,11 +402,6 @@ $db = Database::getInstance();
         updateTimeEndSlots() {
             this.timeEndSelect.parentElement.classList.remove("hidden");
 
-            const options = document.querySelectorAll("#timeStart option:not(:disabled)");
-            if (this.timeEndOptions === null) {
-                this.timeEndOptions = Array.from(this.timeStartSelect.options);
-            }
-
             const startTime = this.timeStartSelect.value.split(" ")[0];
             const temp = this.timeEndOptions.map(option => ({
                 text: option.innerText,
@@ -443,6 +412,9 @@ $db = Database::getInstance();
             this.timeEndSelect.innerHTML = "";
             const startIndex = temp.findIndex(option => option.value === startTime);
             for (let i = startIndex + 1; i < startIndex + 11 && i < temp.length; i++) {
+                if (temp[i].disabled) {
+                    break;
+                }
                 const option = document.createElement("option");
                 option.innerText = temp[i].text;
                 option.value = temp[i].value;
@@ -480,8 +452,6 @@ $db = Database::getInstance();
             this.restartOptions();
         },
     };
-
-    // Initialize on page load
     document.addEventListener("DOMContentLoaded", () => {
         Reservation.init();
     });

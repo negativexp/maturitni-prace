@@ -34,7 +34,6 @@ $db = Database::getInstance();
             </thead>
             <tbody>
             <?php
-
             if (isset($_GET["query"]) || isset($_GET["date"])) {
                 $date = $_GET["date"];
                 $searchText = $_GET["query"];
@@ -44,7 +43,7 @@ $db = Database::getInstance();
                 if (!empty($searchText)) {
                     foreach ($columns as $column) {
                         $conditions[] = "$column LIKE ?";
-                        $parameters[] = "%$searchText%"; // Use wildcards for LIKE
+                        $parameters[] = "%$searchText%";
                     }
                 }
                 if (!empty($date)) {
@@ -76,7 +75,10 @@ $db = Database::getInstance();
                 echo "<td>{$reservation["email"]}</td>";
                 echo "<td>{$reservation["price"]},- Kč</td>";
                 echo "<td>{$reservation["status"]}</td>";
-                echo "<td class='options'><a class='button' onclick='openForm(\"formPopupEditReservation\"); formPopupEditReservation(this.parentNode.parentNode)'>Upravit</a><a class='button' onclick='showWarning(\"Vážně si přejete smazat rezervaci {$reservation['email']}?\", \"{$reservation['email']}\", \"/admin/reservations/delete\", { id: {$reservation['id']} })'>Smazat</a></td>";
+                echo "<td class='options'><a class='button' onclick='openForm(\"formPopupEditReservation\");
+formPopupEditReservation(this.parentNode.parentNode)'>Upravit</a>
+<a class='button' onclick='showWarning(\"Vážně si přejete smazat rezervaci {$reservation['email']}?\",
+\"{$reservation['email']}\", \"/admin/reservations/delete\", { id: {$reservation['id']} })'>Smazat</a></td>";
                 echo "</tr>";
             }
             ?>

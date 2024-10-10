@@ -3,9 +3,6 @@
 <?php include_once("components/head.php"); ?>
 <body>
 <?php include_once("components/sidepanel.php"); ?>
-<?php
-$db = Database::getInstance();
-?>
 <main>
     <header>
         <h1>Přehled</h1>
@@ -13,6 +10,6 @@ $db = Database::getInstance();
             <a class="button" onclick="window.location.href = '/'">Zobrazit web</a>
         </div>
     </header>
-</main>
+</main>￼
 </body>
 </html>

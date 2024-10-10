@@ -6,8 +6,8 @@ if(isset($_POST["datetime"]) && isset($_POST["track"])) {
     $day = $datetime->format('d');
     $track = $_POST["track"];
     $db = Database::getInstance();
-    $reservations = $db->select(DB_PREFIX."_reservations", ["timeStart", "timeEnd", "track"], "MONTH(datetime) = ? AND DAY(datetime) = ? AND track = ?", [$month, $day, $track]);
-
+    $reservations = $db->select(DB_PREFIX."_reservations", ["timeStart", "timeEnd", "track"],
+        "MONTH(datetime) = ? AND DAY(datetime) = ? AND track = ?", [$month, $day, $track]);
     $hours = [
         ["time" => "8:00", "free" => true],
         ["time" => "8:30", "free" => true],
@@ -33,38 +33,35 @@ if(isset($_POST["datetime"]) && isset($_POST["track"])) {
         ["time" => "18:30", "free" => true],
         ["time" => "19:00", "free" => true],
     ];
-
     $timeStartSlots = $hours;
     $timeEndSlots = $hours;
-
     foreach($reservations as $reservation) {
         $startTimeStamp = strtotime($reservation["timeStart"]);
         $endTimeStamp = strtotime($reservation["timeEnd"]);
-
         foreach($hours as $hourKey => $details) {
             $hourTimeStamp = strtotime($details["time"]);
-            if($hourTimeStamp >= $startTimeStamp && $hourTimeStamp < $endTimeStamp) {
+            if ($hourTimeStamp >= $startTimeStamp && $hourTimeStamp < $endTimeStamp) {
                 $timeStartSlots[$hourKey]["free"] = false;
+            }
+            if ($hourTimeStamp > $startTimeStamp && $hourTimeStamp <= $endTimeStamp) {
                 $timeEndSlots[$hourKey]["free"] = false;
             }
         }
     }
-
-
     $timeStartOptions = "";
     $timeEndOptions = "";
-
-    foreach($timeStartSlots as $hour) {
-        $disabled = $hour["free"] ? "" : "disabled";
+    foreach ($timeStartSlots as $hour) {
+        if ($hour["time"] === "19:00") {
+            $disabled = "disabled";
+        } else {
+            $disabled = $hour["free"] ? "" : "disabled";
+        }
         $timeStartOptions .= "<option value='{$hour["time"]}' $disabled>{$hour["time"]}</option>";
     }
-
     foreach($timeEndSlots as $hour) {
         $disabled = $hour["free"] ? "" : "disabled";
         $timeEndOptions .= "<option value='{$hour["time"]}' $disabled>{$hour["time"]}</option>";
     }
-
-
     echo json_encode(["startOptions" => $timeStartOptions, "endOptions" => $timeEndOptions]);
 }
 exit();

@@ -31,8 +31,6 @@ if(isset($_POST["datetime"]) && isset($_POST["track"])
     $pricePerHalfHour = 70;
     $totalPrice = $intervalCount * $pricePerHalfHour;
 
-    //znovu zkontroluj jak v getTimes.php pro lepší bezpečnost
-
     $time = date('Y-m-d H:i:s');
     $columns = ["datetime", "timeStart", "timeEnd", "track", "firstName", "lastName", "email", "price", "status", "created"];
     $values = [$datetime->format("Y-m-d H:i:s"), $timeStart, $timeEnd, $track, $firstName, $lastName, $email, $totalPrice, "NEOVĚŘENO", $time];
@@ -46,7 +44,7 @@ if(isset($_POST["datetime"]) && isset($_POST["track"])
     $mail->SMTPSecure = "ssl";
     $mail->Port       = 465;
     $mail->Username   = "strikemaster@email.cz";
-    $mail->Password   = "sTRIKEmASTER321";
+    $mail->Password   = "...";
     $mail->setFrom($mail->Username);
     $mail->addAddress($email);
     $mail->isHTML(true);                       // Set email format to HTML
@@ -83,7 +81,6 @@ $html = "
     </footer>
     ";
     $mail->Body = $html;
-
     try{
         $mail->send();
     }catch(Exception $e){

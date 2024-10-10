@@ -1,9 +1,6 @@
 <?php
 include_once("db.php");
 include_once("config.php");
-include_once("PHPMailer/PHPMailer.php");
-include_once("PHPMailer/Exception.php");
-include_once("PHPMailer/SMTP.php");
 class router {
     private $db;
     public function __construct()
@@ -146,10 +143,10 @@ class router {
     }
     private function not_found(): void {
         http_response_code(404);
-        die();
+        exit();
     }
     private function adminMiddleware(): void {
-        //session is started on every ADMIN page due to this function.
+        //session je zapnutá na každé admin stránce kvůli této funkci
         session_start();
         if(!isset($_SESSION["admin"])) {
             header("location: /admin/login");
