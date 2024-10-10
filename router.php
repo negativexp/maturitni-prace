@@ -1,6 +1,8 @@
 <?php
 include_once("db.php");
 include_once("config.php");
+include_once("PHPMailer/SMTP.php");
+include_once("PHPMailer/Exception.php");
 class router {
     private $db;
     public function __construct()

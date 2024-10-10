@@ -44,7 +44,7 @@ if(isset($_POST["datetime"]) && isset($_POST["track"])
     $mail->SMTPSecure = "ssl";
     $mail->Port       = 465;
     $mail->Username   = "strikemaster@email.cz";
-    $mail->Password   = "...";
+    $mail->Password   = "sTRIKEmASTER321";
     $mail->setFrom($mail->Username);
     $mail->addAddress($email);
     $mail->isHTML(true);                       // Set email format to HTML
